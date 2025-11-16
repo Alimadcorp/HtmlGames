@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signup Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Geist", "ui-sans", "system-ui"],
+            mono: ["GeistMono", "ui-monospace", "monospace"],
+            bold: ["Geist", "ui-sans-serif", "system-ui"],
+            title: ["GeistMono", "ui-monospace", "monospace"],
+          },
+          fontWeight: {
+            sans: 'normal',
+            mono: 'normal',
+            bold: 'bold',
+            title: 'bold',
+          },
+          colors: {
+            clifford: "#da373d",
+          },
+        },
+      },
+    };
+  </script>
+  <style type="text/tailwindcss">
+  @layer base {
+    .emoji img {
+      @apply inline-block align-middle;
+      height: 1.5em;
+      width: auto;
+      transform-origin: center;
+    }
+    button, input {
+      @apply transition-all duration-300 ease-in-out;
+    }
+    button:disabled {
+      opacity: .5;
+      color: #6b7280;
+      cursor: not-allowed;
+    }
+    input:disabled {
+      opacity: .5;
+      background: #38393b;
+      color: #9da8bd;
+      border: 2px solid #9da8bd;
+      cursor: not-allowed;
+    }
+  }
+</style>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("https://corsproxy.io/?url=https://cdn.alimad.co/f/geist.woff2") format("woff2");
+      font-weight: normal, bold;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "GeistMono";
+      src: url("https://corsproxy.io/?url=https://cdn.alimad.co/f/GeistMono.woff2") format("woff2");
+      font-weight: normal, bold;
+      font-style: normal;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-[#002033] to-black flex items-center justify-center min-h-screen font-sans">
+  <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 sm:p-8 w-full max-w-md mx-4 sm:mx-auto shadow-lg flex flex-col gap-6">
+    <h1 class="flex flex-wrap-nowrap items-center justify-center text-white font-title whitespace-nowrap text-[clamp(1rem,5vw,2rem)] sm:text-[clamp(1rem,3vw,1.8rem)]">
+      <span id="titl" class="flex-shrink-0">Sign Up for&nbsp;</span>
+      <span class="gibberish flex-shrink-0">12345678</span>
+    </h1>
+    <form class="flex flex-col gap-4" id="form1">
+      <input required type="text" placeholder="Username" id="username" 
+        class="transition-all p-3 rounded-lg bg-white/30 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
+      <input required type="email" placeholder="Email" id="email" 
+        class="transition-all p-3 rounded-lg bg-white/30 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
+      <input required type="password" placeholder="Password" id='password' 
+        class="transition-all p-3 rounded-lg bg-white/30 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
+      <button id="create1" type="submit" 
+        class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center text-sm sm:text-base">
+        Create Account
+      </button>
+    </form>
+    <p id="login" class="text-white/70 text-center text-xs sm:text-sm">
+      Already have an account? 
+      <a href="#" onclick="login()" class="text-blue-400 hover:underline">Log in</a>
+    </p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.553.0/dist/umd/lucide.min.js"></script>
+  <script>
+
+    // ----------------------- UTILITY -----------------------
+
+    const g = (e) => document.getElementById(e);
+    const q = (e) => document.querySelectorAll(e);
+    const l = lucide.createIcons;
+    const ord = (n) => { const s = ["th","st","nd","rd"], v = n % 100; return n + (s[(v-20)%10] || s[v] || s[0]) };
+    const pre = (e, t) => t.map(str => e + str);
+    const del = (k) => localStorage.removeItem(k);
+    const exec = (f, t) => setTimeout(f, t);
+    const fetc = async (x, o) => {let r,b,t;if(typeof x=="string")x=[x];for(let i = 0;i<x.length;i++){u=x[i];try{r=await fetch(u, o);try{t=await r.text();try{b=JSON.parse(t)}catch{b=t}}catch{b=r}}catch(e){b=e}return b}};
+    const load = (k, d = 0) => { let w = localStorage.getItem(k); if(!w) return d; try { return JSON.parse(w) } catch { return /^\d+$/.test(w) ? parseInt(w):w }};
+    const save = (k, e) => localStorage.setItem(k, typeof e == 'string' ? e : JSON.stringify(e));
+    const titl = s => s.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase());
+    
+    // ----------------------- MAIN LOGIC -----------------------
+    
+    function login() { // On click 'Log in instead'
+      let i = g('login').innerHTML; save('lih', i);
+      let att = load('login.attempts'); let lo = load('login.loop');
+      let o, xs, d = 2000;
+      switch(att){
+        case 0: o = "Bro you don't have an account yet"; break
+        case 1: o = "I said bro you don't even have an account yet"; break
+        case 2: o = "Look, you need to sign up first, before trying to login"; break
+        case 3: o = "Do you even remember your username?"; break
+        case 4: o = "Are you sure?"; break
+        case 5: o = "Stop lying, I can see all accounts"; break
+        case 6: o = "Oh god please just follow the steps above"; break
+        case 7: o = "What are you on in for <span class='emoji'>:heavysob:</span>"; break
+        case 8: o = "SIGN UP BEFORE TRYING TO LOG IN"; break
+        case 9: o = "<p class='font-bold'>YOU HAVE NO ACCOUNT TO LOG IN TO YET</p>"; break
+        case 10: o = "<p class='gibberish font-bold'>123456789012345678901234567890</p>"; break
+        case 11: o = "<span class='emoji'>:noooovanish:</span> ".repeat(10); break
+        case 12: o = "<span class='emoji'>:heavysob-random:</span> ".repeat(15); if(lo > 0) o = `Bro this is your ${titl(ord(lo+1))} time doing this <span class='emoji'>:heavysob:</span>`; break
+        case 13: o = "Fine, you won"; xs = "Here you go: "; break
+        case 14: o = "Bro has memory loss"; break;
+        case 15: o = "BRO WHAT THE HELL DO YOU WANNA GO AGAIN"; break
+        case 16: o = "Fine"; break
+        default: o = "<span class='emoji'>:heavysob:</span>"; att = -1; save('login.loop', lo + 1); break
+      }
+      g('login').innerHTML = o;
+      emojify();
+      save('login.attempts', att + 1);
+      if(!xs) exec(() => g('login').innerHTML = i, d);
+      else exec(() => { g('login').innerHTML = xs; exec(() => { g('create1').textContent = "Log In"; g('login').innerHTML = ""; g('username').style.display = 'none'; g('username').required = false; g('titl').innerHTML = "Log In to&nbsp;"; save('login.attempts', 999) }, d) }, d);
+    }
+    async function next(){ // On click submit
+      if( load('login.attempts') == 999 ){
+        g('email').disabled = g('password').disabled = g('create1').disabled = true;
+        g('create1').innerHTML = '<i data-lucide="loader" class="w-6 h-6 text-white animate-spin" aria-hidden="true"></i>'; l();
+        let r = await fetc(['/auth/login'+`?email=${g('email').value}&pwd=${g('password').value}`,'/auth/login.txt']);
+        exec(() => { alert(r); g('create1').textContent = "Create Account"; g('login').innerHTML = "See? I told you, you have no account yet"; g('username').style.display = 'inline'; g('username').required = true; g('titl').innerHTML = "Sign Up for&nbsp;"; g('email').disabled = g('password').disabled = g('create1').disabled = false; save('login.attempts', 14); exec(() => g('login').innerHTML = load('lih'), 3000) }, Math.random() * 1000);
+      } else {
+
+      }
+    }
+    g('form1').addEventListener("submit", e => {
+      e.preventDefault();
+      if (!g('form1').checkValidity()) return;
+      next();
+    })
+
+    // ----------------------- SATURATORS -----------------------
+    
+    const gibberish = () => {
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{};:,.<>?/~`|';
+      const gen = l => Array.from({length: l}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+      q(".gibberish").forEach(el => {
+        el.textContent = gen(el.textContent.length);
+      });
+      requestAnimationFrame(gibberish);
+    };
+    const emojify = () => {
+      let e = q(".emoji:not([data-emojified])").forEach(el => {
+        el.dataset.emojified = "true";
+        let u = el.textContent.replaceAll(':', '');
+        el.innerHTML = `<img src='https://e.alimad.co/${u.trim()}'>`;
+      })
+    }
+    const preload = (urls) => {
+      urls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+      });
+    };
+    preload([
+      ...pre('https://e.alimad.co/', ['heavysob', 'heavysob-random', 'noooovanish'])
+    ]);
+    window.onload = () => { l(); del('login.attempts'); setInterval(emojify, 500); gibberish(); };
+  </script>
+</body>
+</html>
