@@ -22,37 +22,46 @@
             title: 'bold',
           },
           colors: {
-            clifford: "#da373d",
+            theme: "#2563eb"
           },
         },
       },
     };
   </script>
   <style type="text/tailwindcss">
-  @layer base {
-    .emoji img {
-      @apply inline-block align-middle;
-      height: 1.5em;
-      width: auto;
-      transform-origin: center;
+    @layer base {
+      body {
+        user-select: none;
+        overflow-x: hidden;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .emoji img {
+        @apply inline-block align-middle;
+        height: 1.5em;
+        width: auto;
+        transform-origin: center;
+      }
+      .anchor {
+        @apply text-blue-400 hover:underline cursor-pointer inline
+      }
+      button, input {
+        @apply transition-all duration-300 ease-in-out;
+      }
+      button:disabled {
+        opacity: .5;
+        color: #6b7280;
+        background-color: #38393b;
+        cursor: not-allowed;
+      }
+      input:disabled {
+        opacity: .5;
+        background: #38393b;
+        color: #9da8bd;
+        border: 2px solid #9da8bd;
+        cursor: not-allowed;
+      }
     }
-    button, input {
-      @apply transition-all duration-300 ease-in-out;
-    }
-    button:disabled {
-      opacity: .5;
-      color: #6b7280;
-      cursor: not-allowed;
-    }
-    input:disabled {
-      opacity: .5;
-      background: #38393b;
-      color: #9da8bd;
-      border: 2px solid #9da8bd;
-      cursor: not-allowed;
-    }
-  }
-</style>
+  </style>
   <style>
     @font-face {
       font-family: "Geist";
@@ -75,20 +84,20 @@
       <span class="gibberish flex-shrink-0">12345678</span>
     </h1>
     <form class="flex flex-col gap-4" id="form1">
-      <input required type="text" placeholder="Username" id="username" 
+      <input type="text" placeholder="Username" id="username" style="display:none"
         class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
       <input required type="email" placeholder="Email" id="email" 
         class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
-      <input required type="password" placeholder="Password" id='password' 
+      <input type="password" placeholder="Password" id='password' style="display:none"
         class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
-      <button id="create1" type="submit" 
-        class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center text-sm sm:text-base">
+      <button id="create1" type="submit" disabled
+        class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
         Create Account
       </button>
     </form>
     <p id="login" class="text-white/70 text-center text-xs sm:text-sm">
       Already have an account? 
-      <a href="#" onclick="login()" class="text-blue-400 hover:underline">Log in</a>
+      <span onclick="login()" class="text-blue-400 hover:underline anchor">Log in</span>
     </p>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.553.0/dist/umd/lucide.min.js"></script>
@@ -108,6 +117,8 @@
     const save = (k, e) => localStorage.setItem(k, typeof e == 'string' ? e : JSON.stringify(e));
     const titl = s => s.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase());
     
+    // ----------------------- GLOBAL VARIABLES -----------------------
+    let state = { create1att: 0 };
     // ----------------------- MAIN LOGIC -----------------------
     
     function login() { // On click 'Log in instead'
@@ -138,22 +149,62 @@
       emojify();
       save('login.attempts', att + 1);
       if(!xs) exec(() => g('login').innerHTML = i, d);
-      else exec(() => { g('login').innerHTML = xs; exec(() => { g('create1').textContent = "Log In"; g('login').innerHTML = ""; g('username').style.display = 'none'; g('username').required = false; g('titl').innerHTML = "Log In to&nbsp;"; save('login.attempts', 999) }, d) }, d);
+      else exec(() => { g('login').innerHTML = xs; exec(() => { g('create1').textContent = "Log In"; g('login').innerHTML = ""; g('password').style.display = 'inline'; g('password').required = true; g('titl').innerHTML = "Log In to&nbsp;"; save('login.attempts', 999) }, d) }, d);
     }
+    function signup() {
+      const el = g('create1');
+      const orig = el.dataset.orig ?? (el.dataset.orig = el.innerHTML);
+      const d = 2000;
+      state.create1att = state.create1att || 0;
+      if (state.create1att === 0) {
+        el.innerHTML = 'Are you sure?';
+        state.create1att = 1;
+        clearTimeout(state._create1Revert);
+        state._create1Revert = exec(() => { el.innerHTML = orig; state.create1att = 0; state._create1Revert = null; }, d);
+        return;
+      }
+      if (state.create1att === 1) {
+        state.create1att = 2;
+        clearTimeout(state._create1Revert);
+        el.setAttribute('disabled', '');
+        el.style.pointerEvents = 'none';
+        el.innerHTML = 'Loading...<div style="margin-top:8px;height:6px;background:#222;border-radius:6px;overflow:hidden"><div class="__fill" style="width:0%;height:100%"></div></div>';
+        clearInterval(state._create1Timer);
+        let p = 0;
+        state._create1Timer = setInterval(() => {
+          p = Math.min(100, p + (Math.random() * 12 + 6));
+          const fill = el.querySelector('.__fill');
+          if (fill) fill.style.width = p + '%';
+          if (p >= 100) {
+            clearInterval(state._create1Timer);
+            state._create1Timer = null;
+            el.innerHTML = '<i data-lucide="loader" class="w-6 h-6 text-white animate-spin" aria-hidden="true"></i>'; l();
+            window.open("https://cdn.alimad.co/f/static/Ricky.mp4", '_self');
+            // complete -> reset after short delay (replace with your next-step)
+            exec(() => { el.removeAttribute('disabled'); el.style.pointerEvents = ''; el.innerHTML = orig; state.create1att = 0; }, 600);
+          }
+        }, 200);
+        return;
+      }
+    }
+
     async function next(){ // On click submit
       if( load('login.attempts') == 999 ){
         g('email').disabled = g('password').disabled = g('create1').disabled = true;
         g('create1').innerHTML = '<i data-lucide="loader" class="w-6 h-6 text-white animate-spin" aria-hidden="true"></i>'; l();
         let r = await fetc(['/auth/login'+`?email=${g('email').value}&pwd=${g('password').value}`,'/auth/login.txt']);
-        exec(() => { alert(r); g('create1').textContent = "Create Account"; g('login').innerHTML = "See? I told you, you have no account yet"; g('username').style.display = 'inline'; g('username').required = true; g('titl').innerHTML = "Sign Up for&nbsp;"; g('email').disabled = g('password').disabled = g('create1').disabled = false; save('login.attempts', 14); exec(() => g('login').innerHTML = load('lih'), 3000) }, Math.random() * 1000);
+        exec(() => { alert(r); g('create1').textContent = "Create Account"; g('login').innerHTML = "See? I told you, you have no account yet"; g('password').style.display = 'none'; g('password').required = false; g('titl').innerHTML = "Sign Up for&nbsp;"; g('email').disabled = g('password').disabled = g('create1').disabled = false; save('login.attempts', 14); exec(() => g('login').innerHTML = load('lih'), 3000) }, Math.random() * 1000);
       } else {
-
+        signup();
       }
     }
     g('form1').addEventListener("submit", e => {
       e.preventDefault();
       if (!g('form1').checkValidity()) return;
       next();
+    })
+    g('form1').addEventListener("input", e => {
+      g('create1').disabled = !g('form1').checkValidity();
     })
 
     // ----------------------- SATURATORS -----------------------
