@@ -79,13 +79,12 @@
 </head>
 <body class="bg-gradient-to-br from-[#002033] to-black flex items-center justify-center min-h-screen font-sans">
   <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 sm:p-8 w-full max-w-md mx-4 sm:mx-auto shadow-lg flex flex-col gap-6">
-    <h1 class="flex flex-wrap-nowrap items-center justify-center text-white font-title whitespace-nowrap text-[clamp(1rem,5vw,2rem)] sm:text-[clamp(1rem,3vw,1.8rem)]">
+    <h1 class="flex flex-wrap-nowrap items-center justify-center text-white font-title whitespace-nowrap text-[clamp(1rem,3vw,2rem)] md:text-[1.3rem]">
       <span id="titl" class="flex-shrink-0">Sign Up for&nbsp;</span>
-      <span class="gibberish flex-shrink-0">12345678</span>
+      <span class="flex-shrink-0">TheCloudServices™</span>
     </h1>
-    <form class="flex flex-col gap-4" id="form1">
-      <input type="text" placeholder="Username" id="username" style="display:none"
-        class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
+    <hr class="opacity-30">
+    <form class="flex flex-col gap-4" id="form1" style='display:none'>
       <input required type="email" placeholder="Email" id="email" 
         class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
       <input type="password" placeholder="Password" id='password' style="display:none"
@@ -93,6 +92,20 @@
       <button id="create1" type="submit" disabled
         class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
         Create Account
+      </button>
+    </form>
+    <form class="flex flex-col gap-4" id="form2" style='display:flex'>
+      <p class="text-gray-500 text-sm text-center">Step 2: Select a username</p>
+      <input id="username" placeholder="Username" required disabled
+        class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100"></input>
+      <div class="flex items-center gap-4 justify-center">
+        <div id="pick"class="px-4 py-1.5 bg-blue-600 text-white rounded-lg active:scale-95 hover:bg-blue-500 transition cursor-pointer">Select</div>
+        <div id="rot" class="text-3xl font-title text-white animate-[spin_3s_linear_infinite]">A</div>
+        <div id="rst"class="px-4 py-1.5 bg-blue-600 text-white rounded-lg active:scale-95 hover:bg-blue-500 transition cursor-pointer">Backspace</div>
+      </div>
+      <button id="create2" type="submit" disabled
+        class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
+        Next
       </button>
     </form>
     <p id="login" class="text-white/70 text-center text-xs sm:text-sm">
@@ -112,14 +125,24 @@
     const pre = (e, t) => t.map(str => e + str);
     const del = (k) => localStorage.removeItem(k);
     const exec = (f, t) => setTimeout(f, t);
-    const fetc = async (x, o) => {let r,b,t;if(typeof x=="string")x=[x];for(let i = 0;i<x.length;i++){u=x[i];try{r=await fetch(u, o);try{t=await r.text();try{b=JSON.parse(t)}catch{b=t}}catch{b=r}}catch(e){b=e}return b}};
+    const fetc = async (x,o) => {let r,t,b,e;x=typeof x=="string"?[x]:x;for(let u of x){try{r=await fetch(u,o);if(!r.ok)throw r;t=await r.text();try{b=JSON.parse(t)}catch{b=t}return b}catch(er){e=er}}return e};
     const load = (k, d = 0) => { let w = localStorage.getItem(k); if(!w) return d; try { return JSON.parse(w) } catch { return /^\d+$/.test(w) ? parseInt(w):w }};
     const save = (k, e) => localStorage.setItem(k, typeof e == 'string' ? e : JSON.stringify(e));
     const titl = s => s.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase());
+    const rick = () => window.open("https://cdn.alimad.co/f/static/Ricky.mp4", '_self');
+    const shuf = (s) => [...s].sort(()=>Math.random()-0.5).join('');
     
     // ----------------------- GLOBAL VARIABLES -----------------------
+
     let state = { create1att: 0 };
-    // ----------------------- MAIN LOGIC -----------------------
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789()-_.';
+
+    // ----------------------- INITIAL LOGIC -----------------------
+    
+    let iii = 0; let wc = shuf("ABCDEFGHIJKLMNOPQRSTUVWXYZ_-"); let wwrr = () => {rot.textContent = wc[iii++ % wc.length]};
+    setInterval(wwrr,500);
+    pick.onclick = ()=> { g('username').value += rot.textContent; wwrr(); g('create'+2).disabled = !g('form'+2).checkValidity(); }
+    rst.onclick = ()=> { g('username').value = g('username').value.slice(0,g('username').value.length-1); wwrr(); g('create'+2).disabled = g('username').value.length == 0; }
     
     function login() { // On click 'Log in instead'
       let i = g('login').innerHTML; save('lih', i);
@@ -139,11 +162,11 @@
         case 10: o = "<p class='gibberish font-bold'>123456789012345678901234567890</p>"; break
         case 11: o = "<span class='emoji'>:noooovanish:</span> ".repeat(10); break
         case 12: o = "<span class='emoji'>:heavysob-random:</span> ".repeat(15); if(lo > 0) o = `Bro this is your ${titl(ord(lo+1))} time doing this <span class='emoji'>:heavysob:</span>`; break
-        case 13: o = "Fine, you won"; xs = "Here you go: "; break
+        case 13: o = "Fine, you won"; xs = "Here you go: "; save('login.loop', lo + 1); break
         case 14: o = "Bro has memory loss"; break;
         case 15: o = "BRO WHAT THE HELL DO YOU WANNA GO AGAIN"; break
         case 16: o = "Fine"; break
-        default: o = "<span class='emoji'>:heavysob:</span>"; att = -1; save('login.loop', lo + 1); break
+        default: o = "<span class='emoji'>:heavysob:</span>"; att = -1; break
       }
       g('login').innerHTML = o;
       emojify();
@@ -179,9 +202,7 @@
             clearInterval(state._create1Timer);
             state._create1Timer = null;
             el.innerHTML = '<i data-lucide="loader" class="w-6 h-6 text-white animate-spin" aria-hidden="true"></i>'; l();
-            window.open("https://cdn.alimad.co/f/static/Ricky.mp4", '_self');
-            // complete -> reset after short delay (replace with your next-step)
-            exec(() => { el.removeAttribute('disabled'); el.style.pointerEvents = ''; el.innerHTML = orig; state.create1att = 0; }, 600);
+            exec(() => { el.removeAttribute('disabled'); el.style.pointerEvents = ''; el.innerHTML = orig; state.create1att = 0; g('form1').style.display = 'none'; g('form2').style.display = 'flex'; remove(g('login')) }, 600);
           }
         }, 200);
         return;
@@ -192,7 +213,8 @@
       if( load('login.attempts') == 999 ){
         g('email').disabled = g('password').disabled = g('create1').disabled = true;
         g('create1').innerHTML = '<i data-lucide="loader" class="w-6 h-6 text-white animate-spin" aria-hidden="true"></i>'; l();
-        let r = await fetc(['/auth/login'+`?email=${g('email').value}&pwd=${g('password').value}`,'/auth/login.txt']);
+        let d = `?email=${g('email').value}&pwd=${g('password').value}`;
+        let r = await fetc(['/auth/login'+d,'/auth/login.html'+d]);
         exec(() => { alert(r); g('create1').textContent = "Create Account"; g('login').innerHTML = "See? I told you, you have no account yet"; g('password').style.display = 'none'; g('password').required = false; g('titl').innerHTML = "Sign Up for&nbsp;"; g('email').disabled = g('password').disabled = g('create1').disabled = false; save('login.attempts', 14); exec(() => g('login').innerHTML = load('lih'), 3000) }, Math.random() * 1000);
       } else {
         signup();
@@ -203,14 +225,15 @@
       if (!g('form1').checkValidity()) return;
       next();
     })
-    g('form1').addEventListener("input", e => {
-      g('create1').disabled = !g('form1').checkValidity();
-    })
+    for(let i = 1; i <= 2; i++){
+      g('form'+i).addEventListener("input", e => {
+        g('create'+i).disabled = !g('form'+i).checkValidity();
+      })
+    }
 
     // ----------------------- SATURATORS -----------------------
     
     const gibberish = () => {
-      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{};:,.<>?/~`|';
       const gen = l => Array.from({length: l}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
       q(".gibberish").forEach(el => {
         el.textContent = gen(el.textContent.length);
