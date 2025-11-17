@@ -97,7 +97,7 @@
     <form class="flex flex-col gap-4" id="form2" style='display:flex'>
       <p class="text-gray-500 text-sm text-center">Step 2: Select a username</p>
       <input id="username" placeholder="Username" required disabled
-        class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100"></input>
+        class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
       <div class="flex items-center gap-4 justify-center">
         <div id="pick"class="px-4 py-1.5 bg-blue-600 text-white rounded-lg active:scale-95 hover:bg-blue-500 transition cursor-pointer">Select</div>
         <div id="rot" class="text-3xl font-title text-white animate-[spin_3s_linear_infinite]">A</div>
@@ -138,7 +138,7 @@
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789()-_.';
 
     // ----------------------- INITIAL LOGIC -----------------------
-    
+
     let iii = 0; let wc = shuf("ABCDEFGHIJKLMNOPQRSTUVWXYZ_-"); let wwrr = () => {rot.textContent = wc[iii++ % wc.length]};
     setInterval(wwrr,500);
     pick.onclick = ()=> { g('username').value += rot.textContent; wwrr(); g('create'+2).disabled = !g('form'+2).checkValidity(); }
