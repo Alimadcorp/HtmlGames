@@ -60,6 +60,36 @@
         border: 2px solid #9da8bd;
         cursor: not-allowed;
       }
+      .toast {
+        opacity: 0;
+        border: 0.15em solid #fff4;
+        border-radius: 0.5em;
+        backdrop-filter: blur(5px) brightness(1.5);
+        transform: translateY(20px) scale(.95);
+        transition: .25s ease;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      .toast.hide {
+        opacity: 0;
+        transform: translateY(10px) scale(.9);
+      }
+      .toast-close {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0005;
+        backdrop-filter: blur(4px);
+        cursor: pointer;
+      }
     }
   </style>
   <style>
@@ -78,13 +108,14 @@
   </style>
 </head>
 <body class="bg-gradient-to-br from-[#002033] to-black flex items-center justify-center min-h-screen font-sans">
-  <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 sm:p-8 w-full max-w-md mx-4 sm:mx-auto shadow-lg flex flex-col gap-6">
+  <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 sm:p-8 w-full max-w-md mx-4 sm:mx-auto shadow-lg flex flex-col gap-6 my-10">
     <h1 class="flex flex-wrap-nowrap items-center justify-center text-white font-title whitespace-nowrap text-[clamp(1rem,3vw,2rem)] md:text-[1.3rem]">
       <span id="titl" class="flex-shrink-0">Sign Up for&nbsp;</span>
       <span class="flex-shrink-0">TheCloudServices™</span>
     </h1>
     <hr class="opacity-30">
-    <form class="flex flex-col gap-4" id="form1" style='display:none'>
+    <form class="flex flex-col gap-4" id="form1" style='display:flex'>
+      <p class="text-gray-500 text-sm text-center">Enter email address</p>
       <input required type="email" placeholder="Email" id="email" 
         class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
       <input type="password" placeholder="Password" id='password' style="display:none"
@@ -94,15 +125,52 @@
         Create Account
       </button>
     </form>
-    <form class="flex flex-col gap-4" id="form2" style='display:flex'>
-      <p class="text-gray-500 text-sm text-center">Step 2: Select a username</p>
+    <form class="flex flex-col gap-4" id="form3" style='display:none'>
+      <p class="text-gray-500 text-sm text-center">Step 2: Enter your name</p>
+      <input id="name1" placeholder="First name" required data-key="first"
+      class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name2" placeholder="Middle name" required data-key="middle"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name3" placeholder="Second middle name" required data-key="second-middle"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name4" placeholder="Nickname" required data-key="nick"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name5" placeholder="Preferred name" required data-key="preferred"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name6" placeholder="Maiden name" required data-key="maiden"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name7" placeholder="Birth name" required data-key="birth"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name8" placeholder="Honorific title" required data-key="title"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name9" placeholder="Suffix" required data-key="suffix"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name10" placeholder="Pen name" required data-key="pen"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name11" placeholder="Name of favourite personality" required data-key="personality"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name12" placeholder="Name of your father's father" required data-key="grandfather"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name13" placeholder="Name of the guy who lives next door" required data-key="neighbour"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <input id="name14" placeholder="Last name" required data-key="last"
+      class="hidden transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
+      <button id="create3" type="submit" disabled
+        class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
+        Next
+      </button>
+    </form>
+    <form class="flex flex-col gap-4" id="form2" style='display:none'>
+      <p class="text-gray-500 text-sm text-center">Step 3: Select a username</p>
       <input id="username" placeholder="Username" required disabled
         class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base h-12 disabled:text-white disabled:opacity-100">
-      <div class="flex items-center gap-4 justify-center">
-        <div id="pick"class="px-4 py-1.5 bg-blue-600 text-white rounded-lg active:scale-95 hover:bg-blue-500 transition cursor-pointer">Select</div>
-        <div id="rot" class="text-3xl font-title text-white animate-[spin_3s_linear_infinite]">A</div>
-        <div id="rst"class="px-4 py-1.5 bg-blue-600 text-white rounded-lg active:scale-95 hover:bg-blue-500 transition cursor-pointer">Backspace</div>
-      </div>
+        <div class="flex items-center gap-0 justify-center text-white">
+          <div id="rot1" class="px-2 text-3xl font-title cursor-pointer hover:bg-[#ffffff22] rounded-md">a</div>
+          <div id="rot2" class="px-2 text-3xl font-title cursor-pointer hover:bg-[#ffffff22] rounded-md">j</div>
+          <div id="rot3" class="px-2 text-3xl font-title cursor-pointer hover:bg-[#ffffff22] rounded-md">s</div>
+          <div id="rot4" class="px-2 text-3xl font-title cursor-pointer hover:bg-[#ffffff22] rounded-md">1</div>
+          <div id="back" class="mx-2 px-3 py-1.5 bg-blue-600 rounded-lg active:scale-95 hover:bg-blue-500 transition cursor-pointer">←</div>
+        </div>
       <button id="create2" type="submit" disabled
         class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
         Next
@@ -113,11 +181,13 @@
       <span onclick="login()" class="text-blue-400 hover:underline anchor">Log in</span>
     </p>
   </div>
+  <div id="toasts" class="fixed bottom-4 right-4 flex flex-col gap-2 z-50"></div>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.553.0/dist/umd/lucide.min.js"></script>
   <script>
 
     // ----------------------- UTILITY -----------------------
 
+    const a = e => requestAnimationFrame(e);
     const g = (e) => document.getElementById(e);
     const q = (e) => document.querySelectorAll(e);
     const l = lucide.createIcons;
@@ -139,11 +209,27 @@
 
     // ----------------------- INITIAL LOGIC -----------------------
 
-    let iii = 0; let wc = shuf("ABCDEFGHIJKLMNOPQRSTUVWXYZ_-"); let wwrr = () => {rot.textContent = wc[iii++ % wc.length]};
-    setInterval(wwrr,500);
-    pick.onclick = ()=> { g('username').value += rot.textContent; wwrr(); g('create'+2).disabled = !g('form'+2).checkValidity(); }
-    rst.onclick = ()=> { g('username').value = g('username').value.slice(0,g('username').value.length-1); wwrr(); g('create'+2).disabled = g('username').value.length == 0; }
-    
+    const seqs = { rot1: "abcdefghi", rot2: "jklmnopqr", rot3: "stuvwxyz_", rot4: "1234567890"};
+    for (let id in seqs) {
+      state[id] = 0;
+      setInterval(() => {
+        let s = seqs[id];
+        state[id] = (state[id] + 1) % s.length;
+        document.getElementById(id).textContent = s[state[id]];
+      }, 400);
+    }
+    for (let id in seqs) {
+      document.getElementById(id).onclick = () => {
+        g('username').value += document.getElementById(id).textContent;
+        g('create2').disabled = g('username').value.length < 4;
+      };
+    }
+    back.onclick = () => { let u = g('username'); u.value = u.value.slice(0, -1); g('create2').disabled = g('username').value.length < 4; };
+
+    for(let i = 1; i <= 13; i++){
+      g('name'+i).addEventListener('input', e => g('name'+(i+1)).style.display = (g('name'+i).value.length > 2) ? 'inline' : 'none');
+    }
+
     function login() { // On click 'Log in instead'
       let i = g('login').innerHTML; save('lih', i);
       let att = load('login.attempts'); let lo = load('login.loop');
@@ -172,7 +258,7 @@
       emojify();
       save('login.attempts', att + 1);
       if(!xs) exec(() => g('login').innerHTML = i, d);
-      else exec(() => { g('login').innerHTML = xs; exec(() => { g('create1').textContent = "Log In"; g('login').innerHTML = ""; g('password').style.display = 'inline'; g('password').required = true; g('titl').innerHTML = "Log In to&nbsp;"; save('login.attempts', 999) }, d) }, d);
+      else exec(() => { g('login').innerHTML = xs; exec(() => { g('create1').textContent = "Log In"; g('login').innerHTML = "Don't have an account? <span class='anchor' onclick=\"this.style.display = 'none'\">Sign up</span>"; g('password').style.display = 'inline'; g('password').required = true; g('titl').innerHTML = "Log In to&nbsp;"; save('login.attempts', 999) }, d) }, d);
     }
     function signup() {
       const el = g('create1');
@@ -202,7 +288,7 @@
             clearInterval(state._create1Timer);
             state._create1Timer = null;
             el.innerHTML = '<i data-lucide="loader" class="w-6 h-6 text-white animate-spin" aria-hidden="true"></i>'; l();
-            exec(() => { el.removeAttribute('disabled'); el.style.pointerEvents = ''; el.innerHTML = orig; state.create1att = 0; g('form1').style.display = 'none'; g('form2').style.display = 'flex'; remove(g('login')) }, 600);
+            exec(() => { el.removeAttribute('disabled'); el.style.pointerEvents = ''; el.innerHTML = orig; state.create1att = 0; g('form1').style.display = 'none'; g('form3').style.display = 'flex'; g('login').remove(); step('email', g('email').value); remove(g('login')) }, 600);
           }
         }, 200);
         return;
@@ -220,25 +306,87 @@
         signup();
       }
     }
+
+    function step(key, input){
+      let data = { email: "", name: {}, username: "" };
+      data = load("signup.data", data);
+      data[key] = input;
+      save("signup.data", data);
+      save("signup.initiated", 1);
+    }
+
+    const complete = () => save("signup.initiated", 0);
+
+    // ----------------------- EVENT LISTENERS -----------------------
+
     g('form1').addEventListener("submit", e => {
       e.preventDefault();
       if (!g('form1').checkValidity()) return;
       next();
     })
-    for(let i = 1; i <= 2; i++){
+    g('form3').addEventListener('submit', e => {
+      e.preventDefault();
+      if (!g('form3').checkValidity()) return;
+      let d = {};
+      for(let i = 1; i <= 14; i++){
+        d[g('name'+i).getAttribute('data-key')] = g('name'+i).value;
+      }
+      step('name', d);
+      g('form2').style.display = 'flex';
+      g('form3').style.display = 'none';
+    });
+    g('form2').addEventListener('submit', e => {
+      e.preventDefault();
+      if (!g('form2').checkValidity()) return;
+      step('username', g('username').value);
+      g('form2').innerHTML = "<p class='align-center text-white text-xl'>That's it for now</p>";
+      complete();
+      notify("Come back later for the whole experience");
+    });
+    for(let i = 1; i <= 3; i++){
       g('form'+i).addEventListener("input", e => {
         g('create'+i).disabled = !g('form'+i).checkValidity();
       })
     }
 
-    // ----------------------- SATURATORS -----------------------
-    
+    // ----------------------- SATURATORS & EXTRA -----------------------
+
+    const notify = (text, type="info") => {
+      const icons = {
+        info: "info",
+        error: "alert-circle",
+        success: "circle-check"
+      };
+      const colors = {
+        info: "blue-600",
+        error: "red-600",
+        success: "green-600"
+      };
+      const box = document.createElement("div");
+      box.className = `toast relative min-w-[220px] px-2 py-1 bg-${colors[type]}/10 shadow-lg flex ml-4 items-center gap-2 text-${colors[type]}`;
+      box.innerHTML = `
+        <i data-lucide="${icons[type]}" class="w-4 h-4"></i>
+        <span class="flex-1 text-[1em] text-white">${text}</span>
+        <div class="toast-close text-white border border-white/10"><i data-lucide="x" class="w-3 h-3"></i></div>
+      `;
+      const container = document.getElementById("toasts");
+      container.appendChild(box); l(); emojify();
+      a(() => box.classList.add("show"));
+      const closeBtn = box.querySelector(".toast-close");
+      closeBtn.onclick = e => {
+        e.stopPropagation();
+        box.classList.remove("show");
+        box.classList.add("hide");
+        setTimeout(() => box.remove(), 250);
+      };
+    }
+
     const gibberish = () => {
       const gen = l => Array.from({length: l}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
       q(".gibberish").forEach(el => {
         el.textContent = gen(el.textContent.length);
       });
-      requestAnimationFrame(gibberish);
+      a(gibberish);
     };
     const emojify = () => {
       let e = q(".emoji:not([data-emojified])").forEach(el => {
@@ -254,9 +402,9 @@
       });
     };
     preload([
-      ...pre('https://e.alimad.co/', ['heavysob', 'heavysob-random', 'noooovanish'])
+      ...pre('https://e.alimad.co/', ['heavysob', 'heavysob-random', 'noooovanish', 'evilgrin'])
     ]);
-    window.onload = () => { l(); del('login.attempts'); setInterval(emojify, 500); gibberish(); };
+    window.onload = () => { l(); del('login.attempts'); setInterval(emojify, 500); gibberish(); if(load("signup.initiated", false)) notify("Looks like you refreshed and lost all your form data. No, I'm not gonna recover it because evil <span class='emoji'>:evilgrin:</span>", 'error') };
   </script>
 </body>
 </html>
