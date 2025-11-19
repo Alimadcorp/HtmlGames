@@ -66,6 +66,7 @@
         width: 100%;
         height: 10px;
         border: 1px solid #777;
+        margin-top: 3px;
         border-radius: 5px;
         background: #f0f0f0;
         outline: none;
@@ -134,7 +135,7 @@
       <span class="flex-shrink-0">TheCloudServices™</span>
     </h1>
     <hr class="opacity-30">
-    <form class="flex flex-col gap-4" id="form1" style='display:flex'>
+    <form class="flex flex-col gap-4" id="form1" style='display:none'>
       <p class="text-gray-500 text-sm text-center">Enter email address</p>
       <input required type="email" placeholder="Email" id="email" 
         class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
@@ -215,22 +216,33 @@
         <input id="gender4" type="range" min="0" max="100" value="0" oninput="slid(this)" required class="slider">
       </div>
       <div class="flex flex-col gap-1">
-        <label for="gender5" class="text-white text-sm">Clanker</label>
+        <label for="gender5" class="text-white text-sm">Human</label>
         <input id="gender5" type="range" min="0" max="100" value="0" oninput="slid(this)" required class="slider">
       </div>
+      <div class="flex flex-col gap-1">
+        <label for="gender6" class="text-white text-sm">Clanker</label>
+        <input id="gender6" type="range" min="0" max="100" value="0" oninput="slid(this)" required class="slider">
+      </div>
+      <div id="notification4" class="text-center font-sans mt-0 px-2 py-1 bg-gray-900/10 rounded-md text-red-500"></div>
       <button id="create4" type="submit" disabled
         class="bg-blue-600 hover:brightness-110 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
         Next
       </button>
     </form>
-    <form class="flex flex-col gap-4" id="form5" style="display:none">
+    <form class="flex flex-col gap-4" id="form5" style="display:flex">
       <p class="text-gray-400 text-sm text-center">Step 5: Enter date of birth</p>
       <div class="flex gap-2 justify-center text-black">
         <div class="flex flex-col items-center">
           <span id="day" class="w-12 text-center text-lg text-white">01</span>
         </div>
         <div class="flex flex-col items-center">
+          <span class="text-center text-lg text-white">-</span>
+        </div>
+        <div class="flex flex-col items-center">
           <span id="month" class="w-12 text-center text-lg text-white">01</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <span class="text-center text-lg text-white">-</span>
         </div>
         <div class="flex flex-col items-center">
           <span id="year" class="w-16 text-center text-lg text-white">1900</span>
@@ -238,7 +250,7 @@
       </div>
       <input type="range" min="0" max="47481" oninput="slid(this,47481)" value="0" id="dateSlider"
         class="w-full h-2 rounded-full bg-gray-300 slider mt-4">
-      <div id="notification" class="text-center font-semibold mt-0 text-white px-2 py-1 bg-gray-900/10 rounded-md"></div>
+      <div id="notification5" class="text-center font-semibold mt-0 text-red-500 px-2 py-1 bg-gray-900/10 rounded-md"></div>
       <button id="create5" type="submit" disabled
         class="bg-blue-600 hover:brightness-110 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
         Next
@@ -260,7 +272,6 @@
     const q = (e) => document.querySelectorAll(e);
     const l = lucide.createIcons;
     const ud = () => { g("day").textContent = state.day.toString().padStart(2, "0"); g("month").textContent = state.month.toString().padStart(2, "0"); g("year").textContent = state.year; g("dateSlider").value = d2s(state.day, state.month, state.year); slid(g("dateSlider"),47481); const allowed = allow(state.year); g('create5').disabled = !allowed; };
-    
     const d2s = (d, m, y) => Math.floor((new Date(y,m-1,d) - new Date(1900,0,1)) / (1000*60*60*24));
     const s2d = (value) => {const start = new Date(1900,0,1); const date = new Date(start.getTime() + value*24*60*60*1000); state.day = date.getDate(); state.month = date.getMonth()+1; state.year = date.getFullYear(); ud()};
     const ord = (n) => { const s = ["th","st","nd","rd"], v = n % 100; return n + (s[(v-20)%10] || s[v] || s[0]) };
@@ -274,27 +285,28 @@
     const rick = () => window.open("https://cdn.alimad.co/f/static/Ricky.mp4", '_self');
     const shuf = (s) => [...s].sort(()=>Math.random()-0.5).join('');
     const slid = (sl, m = 100) => { const v=sl.value/m*100; sl.style.background = `linear-gradient(to right, #1b5bba 0%, #1b5bba ${v}%, #eaeaea ${v}%, #eaeaea 100%)`}
-    const allow=t=>{let e="",l=!0;for(let n in allowedRanges){let[o,i]=n.split("-").map(Number);if(t>=o&&t<=i){l=allowedRanges[n].allowed,e=allowedRanges[n].note;break}}let s=g("notification");return s.textContent=e||"",s.classList.toggle("text-green-500",l),s.classList.toggle("text-red-500",!l),l};
+    const allow=t=>{let e="",l=!0;for(let n in agesAllowed){let[o,i]=n.split("-").map(Number);if(t>=o&&t<=i){l=agesAllowed[n].allowed,e=agesAllowed[n].note;break}}let s=g("notification5");return s.textContent=e||"",s.classList.toggle("text-green-500",l),s.classList.toggle("text-red-500",!l),l};
     
     // ----------------------- GLOBAL VARIABLES -----------------------
 
     let state = { create1att: 0, day: 1, month: 1, year: 1900 };
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789()-_.';
-    const allowedRanges = {
+    const agesAllowed = {
       "1900-1910":  { allowed: false, note: "Whoa, ancient scroll in the library" },
       "1911-1920":  { allowed: false, note: "nope" },
       "1921-1930":  { allowed: false, note: "not allowed" },
       "1931-1940":  { allowed: false, note: "Old enough to tell stories nobody believes" },
       "1941-1950":  { allowed: false, note: "Nah" },
       "1951-1960":  { allowed: false, note: "Still too old bruv" },
-      "1961-1970":  { allowed: false, note: "Groovy times, but not allowed either" },
+      "1961-1970":  { allowed: true, note: "Hi there good sirr" },
       "1971-1990":  { allowed: true,  note: "Solid age — welcome aboard!" },
-      "1991-2000":  { allowed: true,  note: "Brain fully developed! Congrats on becoming a complete human" },
-      "2001-2010":  { allowed: true,  note: "Welcome to the Club" },
+      "1991-2000":  { allowed: true,  note: "Brain fully developed!" },
+      "2001-2001":  { allowed: false,  note: "9/11?" },
+      "2002-2010":  { allowed: true,  note: "Welcome to the Club" },
       "2011-2015":  { allowed: true,  note: "Young, lively, allowed" },
       "2016-2020":  { allowed: false, note: "Too young — go outside and play!" },
       "2021-2030":  { allowed: false, note: "Bots and toddlers not allowed" },
-    };
+    }
 
     // ----------------------- INITIAL LOGIC -----------------------
 
@@ -404,10 +416,24 @@
       save("signup.initiated", 1);
     }
 
+    function ongender(e){
+      let x = 'gender'; let reasons = [];
+      let [man, woman, crossiant, french, human, clanker] = [ g('gender1').value, g('gender2').value, g('gender3').value, g('gender4').value, g('gender5').value, g('gender6').value ];
+      if(man + woman < 30 && human < 30) reasons.push("Man/Woman ratio too low");
+      if(crossiant + french < 30) reasons.push("Your Croissant-to-French ratio is illegal in Paris");
+      if((human < 10 || clanker > 90) || clanker > human) reasons.push("Clankers not allowed");
+      if(clanker + human < 30) reasons.push("Must be at least somewhat human");
+      if(french > 70) reasons.push("Too French, not allowed");
+      g("notification4").textContent = reasons[0];
+      g('notification4').style.display = reasons.length > 0 ? 'inline' : 'none';
+      g('create4').disabled = reasons.length > 0;
+    }
+
     const complete = () => save("signup.initiated", 0);
 
     // ----------------------- EVENT LISTENERS -----------------------
 
+    for(let i = 1; i <= 6; i++){ g('gender'+i).addEventListener('change', e => ongender(e.target.value)) }
     g("dateSlider").addEventListener("input", () => s2d(g("dateSlider").value));
     g('form1').addEventListener("submit", e => {
       e.preventDefault();
@@ -435,7 +461,7 @@
     g('form4').addEventListener('submit', e => {
       e.preventDefault();
       if (!g('form4').checkValidity()) return;
-      step('gender', { man: g('gender1').value, woman: g('gender2').value, crossiant: g('gender3').value, french: g('gender4'), clanker: g('gender5') });
+      step('gender', { man: g('gender1').value, woman: g('gender2').value, crossiant: g('gender3').value, french: g('gender4').value, human: g('gender5').value, clanker: g('gender6').value });
       g('form5').style.display = 'flex';
       g('form4').style.display = 'none';
     });
@@ -449,7 +475,7 @@
       complete();
       notify("Come back later for the whole experience");
     });
-    for(let i = 1; i <= 4; i++){
+    for(let i = 1; i <= 3; i++){
       g('form'+i).addEventListener("input", e => {
         g('create'+i).disabled = !g('form'+i).checkValidity();
       })
