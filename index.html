@@ -135,7 +135,7 @@
       <span class="flex-shrink-0">TheCloudServices™</span>
     </h1>
     <hr class="opacity-30">
-    <form class="flex flex-col gap-4" id="form1" style='display:none'>
+    <form class="flex flex-col gap-4" id="form1" style='display:flex'>
       <p class="text-gray-500 text-sm text-center">Enter email address</p>
       <input required type="email" placeholder="Email" id="email" 
         class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
@@ -229,7 +229,7 @@
         Next
       </button>
     </form>
-    <form class="flex flex-col gap-4" id="form5" style="display:flex">
+    <form class="flex flex-col gap-4" id="form5" style="display:none">
       <p class="text-gray-400 text-sm text-center">Step 5: Enter date of birth</p>
       <div class="flex gap-2 justify-center text-black">
         <div class="flex flex-col items-center">
@@ -256,6 +256,20 @@
         Next
       </button>
     </form>
+    <form class="flex flex-col gap-4 font-sans text-white" id="form6" style="display:none">
+      <p class="text-gray-400 text-sm text-center">Step 6: Select your region</p>
+      <div id="display" class="text-2xl font-sans bg-white/10 backdrop-blur p-6 rounded-xl min-w-[200px] text-center">
+        ---
+      </div>
+      <button id="roller" type="button" class="bg-blue-600 px-6 py-3 rounded-xl text-lg active:scale-95 transition">
+        Roll
+      </button>
+      <input type="hidden" name="region" id="regionInput" required>
+      <button id="create6" type="submit" disabled
+        class="bg-blue-600 hover:brightness-110 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
+        Next
+      </button>
+    </form>
     <p id="login" class="text-white/70 text-center text-xs sm:text-sm">
       Already have an account? 
       <span onclick="login()" class="text-blue-400 hover:underline anchor">Log in</span>
@@ -269,27 +283,29 @@
 
     const a = e => requestAnimationFrame(e);
     const g = (e) => document.getElementById(e);
-    const q = (e) => document.querySelectorAll(e);
     const l = lucide.createIcons;
-    const ud = () => { g("day").textContent = state.day.toString().padStart(2, "0"); g("month").textContent = state.month.toString().padStart(2, "0"); g("year").textContent = state.year; g("dateSlider").value = d2s(state.day, state.month, state.year); slid(g("dateSlider"),47481); const allowed = allow(state.year); g('create5').disabled = !allowed; };
+    const q = (e) => document.querySelectorAll(e);
+    const ud = () => { g("day").textContent = state.day.toString().padStart(2, "0"); g("month").textContent = state.month.toString().padStart(2, "0"); g("year").textContent = state.year; g("dateSlider").value = d2s(state.day, state.month, state.year); slid(g("dateSlider"),47481); const allowed = allo(state.year); g('create5').disabled = !allowed; };
     const d2s = (d, m, y) => Math.floor((new Date(y,m-1,d) - new Date(1900,0,1)) / (1000*60*60*24));
-    const s2d = (value) => {const start = new Date(1900,0,1); const date = new Date(start.getTime() + value*24*60*60*1000); state.day = date.getDate(); state.month = date.getMonth()+1; state.year = date.getFullYear(); ud()};
+    const del = (k) => localStorage.removeItem(k);
     const ord = (n) => { const s = ["th","st","nd","rd"], v = n % 100; return n + (s[(v-20)%10] || s[v] || s[0]) };
     const pre = (e, t) => t.map(str => e + str);
-    const del = (k) => localStorage.removeItem(k);
+    const reg = () => g("display").textContent = state.region = g('regionInput').value = state.regions[Math.floor(Math.random() * state.regions.length)];
+    const s2d = (value) => {const start = new Date(1900,0,1); const date = new Date(start.getTime() + value*24*60*60*1000); state.day = date.getDate(); state.month = date.getMonth()+1; state.year = date.getFullYear(); ud()};
+    const allo = (t) => {let e="",l=!0;for(let n in agesAllowed){let[o,i]=n.split("-").map(Number);if(t>=o&&t<=i){l=agesAllowed[n].allowed,e=agesAllowed[n].note;break}}let s=g("notification5");return s.textContent=e||"",s.classList.toggle("text-green-500",l),s.classList.toggle("text-red-500",!l),l};
     const exec = (f, t) => setTimeout(f, t);
     const fetc = async (x,o) => {let r,t,b,e;x=typeof x=="string"?[x]:x;for(let u of x){try{r=await fetch(u,o);if(!r.ok)throw r;t=await r.text();try{b=JSON.parse(t)}catch{b=t}return b}catch(er){e=er}}return e};
+    const list = (i) => g('form'+i).addEventListener("input", e => {g('create'+i).disabled = !g('form'+i).checkValidity()});
     const load = (k, d = 0) => { let w = localStorage.getItem(k); if(!w) return d; try { return JSON.parse(w) } catch { return /^\d+$/.test(w) ? parseInt(w):w }};
-    const save = (k, e) => localStorage.setItem(k, typeof e == 'string' ? e : JSON.stringify(e));
-    const titl = s => s.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase());
     const rick = () => window.open("https://cdn.alimad.co/f/static/Ricky.mp4", '_self');
+    const save = (k, e) => localStorage.setItem(k, typeof e == 'string' ? e : JSON.stringify(e));
     const shuf = (s) => [...s].sort(()=>Math.random()-0.5).join('');
     const slid = (sl, m = 100) => { const v=sl.value/m*100; sl.style.background = `linear-gradient(to right, #1b5bba 0%, #1b5bba ${v}%, #eaeaea ${v}%, #eaeaea 100%)`}
-    const allow=t=>{let e="",l=!0;for(let n in agesAllowed){let[o,i]=n.split("-").map(Number);if(t>=o&&t<=i){l=agesAllowed[n].allowed,e=agesAllowed[n].note;break}}let s=g("notification5");return s.textContent=e||"",s.classList.toggle("text-green-500",l),s.classList.toggle("text-red-500",!l),l};
+    const titl = s => s.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase());
     
     // ----------------------- GLOBAL VARIABLES -----------------------
 
-    let state = { create1att: 0, day: 1, month: 1, year: 1900 };
+    let state = { create1att: 0, day: 1, month: 1, year: 1900, regions: [], region: "", ri: null };
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789()-_.';
     const agesAllowed = {
       "1900-1910":  { allowed: false, note: "Whoa, ancient scroll in the library" },
@@ -299,12 +315,12 @@
       "1941-1950":  { allowed: false, note: "Nah" },
       "1951-1960":  { allowed: false, note: "Still too old bruv" },
       "1961-1970":  { allowed: true, note: "Hi there good sirr" },
-      "1971-1990":  { allowed: true,  note: "Solid age — welcome aboard!" },
+      "1971-1990":  { allowed: true,  note: "Another potential slave- I mean, by all means, welcome!" },
       "1991-2000":  { allowed: true,  note: "Brain fully developed!" },
       "2001-2001":  { allowed: false,  note: "9/11?" },
       "2002-2010":  { allowed: true,  note: "Welcome to the Club" },
-      "2011-2015":  { allowed: true,  note: "Young, lively, allowed" },
-      "2016-2020":  { allowed: false, note: "Too young — go outside and play!" },
+      "2011-2015":  { allowed: true,  note: "Might break a thing or two but welcome" },
+      "2016-2020":  { allowed: false, note: "Too young — go watch soem tiktok or smth" },
       "2021-2030":  { allowed: false, note: "Bots and toddlers not allowed" },
     }
 
@@ -433,13 +449,15 @@
 
     // ----------------------- EVENT LISTENERS -----------------------
 
-    for(let i = 1; i <= 6; i++){ g('gender'+i).addEventListener('change', e => ongender(e.target.value)) }
-    g("dateSlider").addEventListener("input", () => s2d(g("dateSlider").value));
+    [1, 2, 3, 6].forEach(e => list(e));
+
+    // Email Form
     g('form1').addEventListener("submit", e => {
       e.preventDefault();
       if (!g('form1').checkValidity()) return;
       next();
     })
+    // Name Form
     g('form3').addEventListener('submit', e => {
       e.preventDefault();
       if (!g('form3').checkValidity()) return;
@@ -451,6 +469,7 @@
       g('form2').style.display = 'flex';
       g('form3').style.display = 'none';
     });
+    // Username Form
     g('form2').addEventListener('submit', e => {
       e.preventDefault();
       if (!g('form2').checkValidity()) return;
@@ -458,6 +477,7 @@
       g('form2').style.display = 'none';
       g('form4').style.display = 'flex';
     });
+    // The Gender Selector
     g('form4').addEventListener('submit', e => {
       e.preventDefault();
       if (!g('form4').checkValidity()) return;
@@ -465,21 +485,33 @@
       g('form5').style.display = 'flex';
       g('form4').style.display = 'none';
     });
+    for(let i = 1; i <= 6; i++){ g('gender'+i).addEventListener('change', e => ongender(e.target.value)) }
+    // Date of Birth
     g('form5').addEventListener('submit', e => {
       e.preventDefault();
       if (!g('form5').checkValidity()) return;
       step('age', `${state.day}-${state.month}-${state.year}` );
-      //g('form5').style.display = 'flex';
+      g('form6').style.display = 'flex';
       g('form5').style.display = 'none';
-      g('form5').innerHTML = "<p class='align-center text-white text-xl'>That's it for now</p>";
+    });
+    g("dateSlider").addEventListener("input", () => s2d(g("dateSlider").value));
+    // Select Region
+    g('form6').addEventListener('submit', e => {
+      e.preventDefault();
+      if (!g('form6').checkValidity()) return;
+      step('region', state.region );
+      //g('form5').style.display = 'flex';
+      //g('form6').style.display = 'none';
+      g('form6').innerHTML = "<p class='align-center text-white text-xl'>That's it for now</p>";
       complete();
       notify("Come back later for the whole experience");
     });
-    for(let i = 1; i <= 3; i++){
-      g('form'+i).addEventListener("input", e => {
-        g('create'+i).disabled = !g('form'+i).checkValidity();
-      })
-    }
+    ((e = g('roller')) => {
+      e.t = e.addEventListener;
+      e.t("mousedown", () => { state.ri = setInterval(reg, 20); })
+      e.t("mouseup", () => { clearInterval(state.ri); state.ri = null; })
+      e.onclick = () => {reg(); g('create6').disabled = false;}; 
+    })();
 
     // ----------------------- SATURATORS & EXTRA -----------------------
 
@@ -512,7 +544,10 @@
         setTimeout(() => box.remove(), 250);
       };
     }
-
+    const loadRegions = async () => {
+      const data = await fetc("https://restcountries.com/v3.1/all?fields=name");
+      state.regions = [...data.map(c => c.name.common).filter(Boolean).filter((r, i, arr) => arr.indexOf(r)===i).sort(), "Untitled States of America", "The Great Brutain", "Pakishtan", "Italiano ma beloved", "Ohayo Gozaimasu"];
+    };
     const gibberish = () => {
       const gen = l => Array.from({length: l}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
       q(".gibberish").forEach(el => {
@@ -526,7 +561,7 @@
         let u = el.textContent.replaceAll(':', '');
         el.innerHTML = `<img src='https://e.alimad.co/${u.trim()}'>`;
       })
-    }
+    };
     const preload = (urls) => {
       urls.forEach(url => {
         const img = new Image();
@@ -536,7 +571,7 @@
     preload([
       ...pre('https://e.alimad.co/', ['heavysob', 'heavysob-random', 'noooovanish', 'evilgrin'])
     ]);
-    window.onload = () => { l(); del('login.attempts'); setInterval(emojify, 500); gibberish(); if(load("signup.initiated", false)) notify("Looks like you refreshed and lost all your form data. No, I'm not gonna recover it because evil <span class='emoji'>:evilgrin:</span>", 'error') };
+    window.onload = () => { l(); del('login.attempts'); setInterval(emojify, 500); gibberish(); if(load("signup.initiated", false)) notify("Looks like you refreshed and lost all your form data. No, I'm not gonna recover it because evil <span class='emoji'>:evilgrin:</span>", 'error'); loadRegions(); };
   </script>
 </body>
 </html>

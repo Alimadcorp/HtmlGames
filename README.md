@@ -1,4 +1,4 @@
-# HTMLGAMES
+# HtmlGames
 
 ## Intro
 
@@ -15,7 +15,7 @@ This game is a submission to r/badUIBattles and a project for the HackClub Midni
 ### TODO:
 1. [x] ~~Add gender selector~~
 1. [x] ~~Add birthday selector~~
-1. [ ] Select region
+1. [x] ~~Select region~~
 1. [ ] Uhhhh add phone number selector
 1. [ ] Consent to announcements and news
 1. [ ] Consent to privacy policy
