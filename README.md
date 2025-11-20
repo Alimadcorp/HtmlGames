@@ -12,11 +12,19 @@ Hi this is my repository where I'd be making and uploading a bunch of fun HTML g
 ### Sign Up for TheCloudService™
 This game is a submission to r/badUIBattles and a project for the HackClub Midnight program. Basically there's a bunch of stupid questions and UI decisions that is meant to liek drive the user crazy. Also the signup form is impossible to complete, hence login is not allowed. The app is sure that no account exists already.
 
+Files: 
+- index.html: Contains main app
+- sketch.js: Contains all canvas code
+- p5.min.js, p5.sound.min.js, lucide.min.js, tailwind.css: Imported libraries
+- angwybirds.mp3, fly.mp3, pop.mp3, sling.mp3, shot.mp3: Music and sound effects
+- LICENSE, CNAME: License and CNAME for DNS alias
+
 ### TODO:
 1. [x] ~~Add gender selector~~
 1. [x] ~~Add birthday selector~~
 1. [x] ~~Select region~~
 1. [x] ~~Uhhhh add phone number selector~~
+1. [x] ~~Role selector~~
 1. [ ] Consent to announcements and news
 1. [ ] Consent to privacy policy
 1. [ ] Captcha

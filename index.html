@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign Up</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/p5.min.js"></script>
-  <script src="/p5.sound.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.553.0/dist/umd/lucide.min.js"></script>
+  <script src="p5.min.js"></script>
+  <script src="p5.sound.min.js"></script>
+  <script src="sketch.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -137,7 +139,7 @@
       <span class="flex-shrink-0">TheCloudServices™</span>
     </h1>
     <hr class="opacity-30">
-    <form class="flex flex-col gap-4" id="form1" style='display:none'>
+    <form class="flex flex-col gap-4" id="form1" style='display:flex'>
       <p class="text-gray-500 text-sm text-center">Enter email address</p>
       <input required type="email" placeholder="Email" id="email" 
         class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
@@ -287,11 +289,11 @@
         </button>
       </div>
     </form>
-    <form class="flex flex-col gap-4" id="form8" style="display:flex">
+    <form class="flex flex-col gap-4" id="form8" style="display:none">
       <p class="text-gray-500 text-sm text-center">Step 8: Which role describes you best?</p>
-      <div id="wheel-container" class="w-full h-64 flex items-center justify-center"></div>
-      <p id="role-result" class="text-center mt-2 text-lg font-semibold"></p>
-      <button id="create8" type="submit"
+      <div id="wheel-container" class="w-full h-64 my-4 mt-8 flex items-center justify-center"></div>
+      <p id="role-result" class="text-center mt-2 text-lg font-sans text-white"> You are: ...</p>
+      <button id="create8" type="submit" disabled
         class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
         Next
       </button>
@@ -302,10 +304,6 @@
     </p>
   </div>
   <div id="toasts" class="fixed bottom-4 right-4 flex flex-col gap-2 z-50"></div>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.553.0/dist/umd/lucide.min.js"></script>
-  <script>
-    
-  </script>
   <script>
 
     // ----------------------- UTILITY -----------------------
@@ -530,7 +528,13 @@
       g('form6').style.display = 'none';
       new p5(sketch, document.getElementById("canvasBox"));
     });
-    setInterval((e = g('ph').value) => g('create7').disabled = !e, 500);
+    ((e = g('roller')) => {
+      e.t = e.addEventListener;
+      e.t("mousedown", () => { state.ri = setInterval(reg, 20); })
+      e.t("mouseup", () => { clearInterval(state.ri); state.ri = null; })
+      e.onclick = () => {reg(); g('create6').disabled = false;}; 
+    })();
+    // Select Phone number
     g('form7').addEventListener('submit', e => {
       e.preventDefault();
       if (!g('form7').checkValidity()) return;
@@ -539,15 +543,19 @@
       step('phone', state.phone);
       g('form7').style.display = 'none';
       g('form8').style.display = 'flex';
+      initWheel();
+    });
+    setInterval((e = g('ph').value) => g('create7').disabled = !e, 500);
+    // Select Role
+    g('form8').addEventListener('submit', e => {
+      e.preventDefault();
+      if (!g('form8').checkValidity()) return;
+      step('role', g('role-result').innerText.replace("You are: ", ""));
+      g('form8').style.display = 'none';
       complete();
       notify("Come back later for the whole experience");
+      g('form9').style.display = 'flex';
     });
-    ((e = g('roller')) => {
-      e.t = e.addEventListener;
-      e.t("mousedown", () => { state.ri = setInterval(reg, 20); })
-      e.t("mouseup", () => { clearInterval(state.ri); state.ri = null; })
-      e.onclick = () => {reg(); g('create6').disabled = false;}; 
-    })();
 
     // ----------------------- SATURATORS & EXTRA -----------------------
 
@@ -615,173 +623,6 @@
       ...pre('https://e.alimad.co/', ['heavysob', 'heavysob-random', 'noooovanish', 'evilgrin'])
     ]);
     window.onload = () => { l(); del('login.attempts'); setInterval(emojify, 500); gibberish(); if(load("signup.initiated", false)) notify("Looks like you refreshed and lost all your form data. No, I'm not gonna recover it because evil <span class='emoji'>:evilgrin:</span>", 'error'); loadRegions(); };
-  </script>
-  <script>
-let sketch = p => {
-  let w, h;
-  let p5canvas = {};
-  let dragging = false;
-  let slingshot;
-  let inputText = "";
-  const files = ['fly.mp3','sling.mp3','shot.mp3','pop.mp3'];
-
-  p.setup = () => {
-    w = p.select("#canvasBox").width;
-    h = p.select("#canvasBox").height;
-    p.createCanvas(w, h);
-    p5canvas.birds = [];
-    p5canvas.floorNumbers = [];
-    p5canvas.gravity = 0.5;
-    p5canvas.maxHits = 1;
-    p5canvas.birdLifetime = 10000;
-    p5canvas.bgColor = [18,18,18];
-    p5canvas.floorColor = [0,0,0];
-    p5canvas.birdColor = [229,57,53];
-    p5canvas.sfx = files.map(src=>{const a=new Audio(src);a.preload='auto';return a});
-    slingshot = p.createVector(150, p.height - 150);
-    p5canvas.birds.push(new Bird(slingshot.x, slingshot.y));
-    generateFloor();
-    p5canvas.sfx = ['fly.mp3','sling.mp3','shot.mp3','pop.mp3']
-      .map(src=>{const a=new Audio(src);a.preload='auto';return a});
-    p5canvas.music = p.createAudio("angwybirds.mp3");
-    p5canvas.music.autoplay(false);
-    p5canvas.music.volume(0.4);
-  };
-  p.windowResized = () => {
-    w = p.select("#canvasBox").width;
-    h = p.select("#canvasBox").height;
-    p.resizeCanvas(w, h);
-    generateFloor();
-  };
-  p.draw = () => {
-    p.background(20);
-    p.background(p5canvas.bgColor);
-    let b = p5canvas.birds[p5canvas.birds.length - 1];
-    if (p.dist(p.mouseX,p.mouseY,b.pos.x,b.pos.y) < b.r) p.cursor('grab');
-    else { p.cursor('default') }
-    if(dragging) p.cursor('grabbing');
-    drawFloor();
-    drawPrediction();
-    p5canvas.birds.forEach(b => {
-      b.update();
-      b.show();
-    });
-  };
-  p.mousePressed = () => {
-    let b = p5canvas.birds[p5canvas.birds.length - 1];
-    if (p.dist(p.mouseX,p.mouseY,b.pos.x,b.pos.y) < b.r) { dragging = true; playSFX('sling'); }
-  };
-  p.mouseReleased = () => {
-    if (!dragging) return;
-    dragging = false;
-    let b = p5canvas.birds[p5canvas.birds.length - 1];
-    b.fly(p.createVector(p.mouseX,p.mouseY));
-    playSFX('shot');
-    p5canvas.birds.push(new Bird(slingshot.x, slingshot.y));
-  };
-  p.keyPressed = () => {
-    if (p.key === "Backspace") inputText = inputText.slice(0, -1);
-    document.getElementById('ph').value = inputText;
-  };
-  function generateFloor() {
-    p5canvas.floorNumbers = [];
-    let startX = p.width * 0.2;
-    let w = (p.width * 0.8) / 10;
-    p5canvas.floorNumbers.push({ x:startX-w, w, n:"+", glow:0 });
-    for (let i = 0; i < 10; i++)
-      p5canvas.floorNumbers.push({ x:startX+i*w, w, n:i, glow:0 });
-  }
-  function playSFX(name, volume = 0.5) {
-    const i = files.indexOf(name + '.mp3');
-    const a = p5canvas.sfx[i];
-    if (!a) return;
-    a.volume = volume;
-    a.currentTime = 0.1;
-    a.play().catch(()=>{});
-  }
-  function drawFloor() {
-    const h = 50;
-    p.fill(0);
-    p.rect(0, p.height - h, p.width, h);
-    for (let f of p5canvas.floorNumbers) {
-      p.fill(f.glow>0 ? p.color(255,255,0, f.glow-=5) : p5canvas.floorColor);
-      p.rect(f.x, p.height - h, f.w, h);
-      p.fill(255);
-      p.textAlign(p.CENTER, p.CENTER);
-      p.textSize(25);
-      p.text(f.n, f.x + f.w/2, p.height - h/2);
-    }
-  }
-  function drawPrediction() {
-    if (!dragging) return;
-    let pos = p.createVector(p.mouseX, p.mouseY);
-    let vel = p5.Vector.sub(slingshot, p.createVector(p.mouseX, p.mouseY)).mult(0.15);
-    p.noFill();
-    p.strokeWeight(2);
-    for (let t = 0; t < 100; t += 2) {
-      vel.y += p5canvas.gravity;
-      pos.add(vel.copy());
-      p.stroke(255,255,0, p.map(t,0,100,255,0));
-      p.ellipse(pos.x, pos.y, 5);
-    }
-  }
-  class Bird {
-    constructor(x,y){
-      this.pos = p.createVector(x,y);
-      this.r = 20;
-      this.vel = p.createVector();
-      this.flying = false;
-      this.hidden = false;
-      this.hits = 0;
-      this.ine = 1;
-    }
-    fly(target){
-      this.vel = p5.Vector.sub(slingshot, target).mult(0.15);
-      this.flying = true;
-      this.ine = 1;
-    }
-    update(){
-      if (this.ine>0) this.ine-=0.1;
-      if (dragging && this === p5canvas.birds[p5canvas.birds.length - 1])
-        this.pos.set(p.mouseX,p.mouseY);
-      else if (this.flying){
-        this.vel.y += p5canvas.gravity;
-        this.pos.add(this.vel);
-        if (this.ine>0) return;
-
-        if (this.pos.x-this.r<0 || this.pos.x+this.r>p.width)
-          this.vel.x *= -1;
-        if (this.pos.y-this.r<0)
-          this.vel.y *= -1;
-
-        const h=50;
-        if (this.pos.y+this.r > p.height-h){
-          this.pos.y = p.height-h-this.r;
-          this.vel.y *= -0.7;
-          this.vel.x *= 0.7;
-
-          for (let f of p5canvas.floorNumbers)
-            if (this.pos.x>f.x && this.pos.x<f.x+f.w && this.hits < p5canvas.maxHits){
-              inputText += f.n;
-              document.getElementById('ph').value += f.n;
-              f.glow = 255;
-              this.hits++;
-              playSFX('hit');
-              break;
-            }
-        }
-        this.r *= 0.995;
-        if (this.r < 1) this.hidden = true;
-      }
-    }
-    show(){
-      if (this.hidden) return;
-      p.fill(p5canvas.birdColor);
-      p.noStroke();
-      p.ellipse(this.pos.x,this.pos.y,this.r*2);
-    }
-  }
-};
   </script>
 </body>
 </html>
