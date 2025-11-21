@@ -1,3 +1,34 @@
+const policyText = `
+<p>We <strong>do not collect your email, name, or any other information</strong>. <i>Information collected is only stored on your localStorage</i>, and never reaches any online servers.</p>
+<p>We and our app will <strong>not be responsible</strong> IF any of your information is transferred to someone else without your consent. May have been a virus or anything. This app is provided <i>as-is</i> to the user.</p>
+<p>Again, your data will <strong>not be stored or used by anyone</strong> unless you share a screenshot with someone else. In any case, you will be responsible if your data leaks.</p>
+Your localStorage will be used to store a bunch of app preferences and stuff.
+<p>You may request <i>deletion of your account</i> if you ever manage to sign up. Your data is protected by you and your browser's security.</p>
+<p>We may update this policy and <strong>will not notify you</strong> when updates are significant.</p><br>`+`
+<p>We do not track or monitor your usage of this application beyond the client-side storage necessary for functionality. All preferences, settings, and interactions remain strictly on your device. No data is transmitted to any server, cloud service, or third-party platform. You are fully responsible for safeguarding your own device and access credentials.</p>
+<p>This application is provided <strong>"as-is"</strong>, without any warranties or guarantees of performance, security, or reliability. Any issues arising from misuse, unauthorized access, or device compromise are not the responsibility of the developers.</p>
+<p>We may include optional features that require local storage for functionality, such as saving user preferences, caching data for faster load times, or storing temporary session information. All such data remains on your device and is never transmitted externally.</p>
+<p>If you choose to share screenshots, logs, or other information from the app, that data leaves your control and we cannot be responsible for how it is used. Please exercise caution and discretion.</p>
+<p>You may request deletion of any locally stored data by clearing your browser storage or app cache. No personal information is collected, stored, or processed externally at any point.</p>
+<p>We may update this policy periodically to reflect changes in the app’s features or to clarify usage terms. Updates are effective immediately upon modification. It is your responsibility to review the policy from time to time.</p>
+<p>By using this application, you acknowledge and accept that the developers are not liable for any data loss, device issues, or other outcomes resulting from app usage. You are solely responsible for protecting your own information.</p>
+<p>Cookies or similar mechanisms may be used only for caching interface settings and are entirely client-side. We do not use cookies for tracking, marketing, or analytics purposes.</p>
+<p>All intellectual property within the app, including code, graphics, and documentation, remains the property of the developers and is provided under the terms of use strictly for personal, non-commercial use.</p>
+<p>If you experience any unexpected behavior, security warnings, or suspicious activity, you should immediately discontinue use and secure your device. We are not liable for any damages or consequences arising from such events.</p>
+<p>Your continued use of this application constitutes acceptance of this privacy and usage policy. You retain full control over your data, which remains on your device unless you voluntarily share it.</p>
+<p>You must agree that im a stupid web dev</p>
+<p>The application may include links, references, or integrations with external content. We do not control these external resources and are not responsible for their content, privacy practices, or security.</p>
+<p>Please note that although we make reasonable efforts to ensure the app functions correctly, no guarantee is made regarding uninterrupted access, error-free performance, or compatibility with all devices and environments.</p>
+<p>You are encouraged to maintain backups of any data or preferences you wish to retain. We assume no responsibility for lost or corrupted data.</p>
+<p>By using this application, you confirm that you understand these terms and agree to use the app responsibly and at your own risk.</p>
+<p>This policy may be extended or modified in future releases, and continued usage after such updates signifies your acceptance of the revised terms.</p>
+<p>All local data storage, including <i>localStorage</i>, <i>IndexedDB</i>, or similar technologies, is under your control. You can inspect, modify, or delete it at any time.</p>
+<p>This app was made by a user who doesnt like users much P:</p><p>
+We strongly advise against sharing device access, credentials, or locally stored data with anyone you do not trust. Doing so is entirely at your own risk.</p><p>
+The application does not collect any personally identifiable information, usage metrics, or behavioral data. Any telemetry or analytics functionality is strictly disabled and remains inactive unless manually enabled by you.</p><p>
+This policy serves as the full extent of our privacy and usage guidelines. By interacting with the app, you acknowledge that you have read, understood, and agreed to all the provisions contained herein.</p>
+<p>Blah blah blah ehem</p>
+`.repeat(20).trim();
 let sketch = (p) => {
   let w, h;
   let p5canvas = {};
@@ -140,41 +171,77 @@ let sketch = (p) => {
       this.ine = 1;
     }
     update() {
+      if (this.r < 0.02) return;
       if (this.ine > 0) this.ine -= 0.1;
-      if (dragging && this === p5canvas.birds[p5canvas.birds.length - 1])
+      const isLast = this === p5canvas.birds[p5canvas.birds.length - 1];
+      if (dragging && isLast) {
         this.pos.set(p.mouseX, p.mouseY);
-      else if (this.flying) {
-        this.vel.y += p5canvas.gravity;
-        this.pos.add(this.vel);
-        if (this.ine > 0) return;
-
-        if (this.pos.x - this.r < 0 || this.pos.x + this.r > p.width)
-          this.vel.x *= -1;
-        if (this.pos.y - this.r < 0) this.vel.y *= -1;
-
-        const h = 50;
-        if (this.pos.y + this.r > p.height - h) {
-          this.pos.y = p.height - h - this.r;
-          this.vel.y *= -0.7;
-          this.vel.x *= 0.7;
-
-          for (let f of p5canvas.floorNumbers)
-            if (
-              this.pos.x > f.x &&
-              this.pos.x < f.x + f.w &&
-              this.hits < p5canvas.maxHits
-            ) {
-              inputText += f.n;
-              document.getElementById("ph").value += f.n;
-              f.glow = 255;
-              this.hits++;
-              playSFX("hit");
-              break;
-            }
-        }
-        this.r *= 0.995;
-        if (this.r < 1) this.hidden = true;
+        return;
       }
+      if (!this.flying) return;
+      this.vel.y += p5canvas.gravity;
+      {
+        const nextX = this.pos.x + this.vel.x;
+        const nextY = this.pos.y + this.vel.y;
+        if (nextX - this.r < 0) {
+          this.pos.x = this.r;
+          this.vel.x *= -0.8;
+        }
+        else if (nextX + this.r > p.width) {
+          this.pos.x = p.width - this.r;
+          this.vel.x *= -0.8;
+        }
+        if (nextY - this.r < 0) {
+          this.pos.y = this.r;
+          this.vel.y *= -0.8;
+        }
+      }
+      this.pos.add(this.vel);
+      if (this.ine > 0) return;
+      const floor = p.height - 50;
+      if (this.pos.y + this.r > floor) {
+        this.pos.y = floor - this.r;
+        this.vel.y *= -0.7;
+        this.vel.x *= 0.7;
+        for (let f of p5canvas.floorNumbers) {
+          if (this.pos.x > f.x && this.pos.x < f.x + f.w && this.hits < p5canvas.maxHits) {
+            inputText += f.n;
+            document.getElementById("ph").value += f.n;
+            f.glow = 255;
+            this.hits++;
+            playSFX("hit");
+            break;
+          }
+        }
+      }
+      for (let o of p5canvas.birds) {
+        if (o === this || o.r < 0.05 || o.hidden) continue;
+        const dx = o.pos.x - this.pos.x;
+        const dy = o.pos.y - this.pos.y;
+        const d = Math.hypot(dx, dy);
+        const minD = this.r + o.r;
+        if (d > 0 && d < minD) {
+          const nx = dx / d;
+          const ny = dy / d;
+          const overlap = minD - d;
+          this.pos.x -= nx * overlap * 0.5;
+          this.pos.y -= ny * overlap * 0.5;
+          o.pos.x += nx * overlap * 0.5;
+          o.pos.y += ny * overlap * 0.5;
+          const rvx = this.vel.x - o.vel.x;
+          const rvy = this.vel.y - o.vel.y;
+          const sep = rvx * nx + rvy * ny;
+          if (sep < 0) {
+            const j = -(sep * 0.9);
+            this.vel.x += j * nx;
+            this.vel.y += j * ny;
+            o.vel.x -= j * nx;
+            o.vel.y -= j * ny;
+          }
+        }
+      }
+      this.r *= 0.998;
+      if (this.r < 1) this.hidden = true;
     }
     show() {
       if (this.hidden) return;

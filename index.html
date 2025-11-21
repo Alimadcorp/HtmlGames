@@ -133,13 +133,13 @@
   </style>
 </head>
 <body class="bg-gradient-to-br from-[#002033] to-black flex items-center justify-center min-h-screen font-sans">
-  <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 sm:p-8 w-auto mx-4 sm:mx-auto shadow-lg flex flex-col gap-6 my-10">
+  <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 sm:p-8 w-auto min-w-[32vw] mx-4 sm:mx-auto shadow-lg flex flex-col gap-6 my-10">
     <h1 class="flex flex-wrap-nowrap items-center justify-center text-white font-title whitespace-nowrap text-[clamp(1rem,3vw,2rem)] md:text-[1.3rem]">
       <span id="titl" class="flex-shrink-0">Sign Up for&nbsp;</span>
       <span class="flex-shrink-0">TheCloudServices™</span>
     </h1>
     <hr class="opacity-30">
-    <form class="flex flex-col gap-4" id="form1" style='display:flex'>
+    <form class="flex flex-col gap-4" id="form1" style='display:none'>
       <p class="text-gray-500 text-sm text-center">Enter email address</p>
       <input required type="email" placeholder="Email" id="email" 
         class="transition-all p-3 rounded-lg bg-white/10 placeholder-white text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm sm:text-base" />
@@ -253,7 +253,12 @@
         </div>
       </div>
       <input type="range" min="0" max="47481" oninput="slid(this,47481)" value="0" id="dateSlider"
-        class="w-full h-2 rounded-full bg-gray-300 slider mt-4">
+        class="w-full h-2 rounded-full bg-gray-300 slider mt-4 hidden">
+      <div id="dateSliderContainer" class="relative w-[400px] h-[7px] bg-gray-300 mx-auto my-10 origin-center rounded-xl">
+        <div class="handle absolute left-0 -top-2 w-20 h-5 bg-transparent cursor-grab"></div>
+        <div class="handle absolute right-0 -top-2 w-20 h-5 transparent cursor-grab"></div>
+        <div id="dateDot" class="absolute -top-[7px] left-0 w-5 h-5 bg-[#00aadd] rounded-full border-2 border-gray-200" style="pointer-events:none"></div>
+      </div>
       <div id="notification5" class="text-center font-semibold mt-0 text-red-500 px-2 py-1 bg-gray-900/10 rounded-md"></div>
       <button id="create5" type="submit" disabled
         class="bg-blue-600 hover:brightness-110 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
@@ -292,9 +297,59 @@
     <form class="flex flex-col gap-4" id="form8" style="display:none">
       <p class="text-gray-500 text-sm text-center">Step 8: Which role describes you best?</p>
       <div id="wheel-container" class="w-full h-64 my-4 mt-8 flex items-center justify-center"></div>
+      <p class="text-gray-500 text-sm text-center">Hold spacebar to spin</p>
       <p id="role-result" class="text-center mt-2 text-lg font-sans text-white"> You are: ...</p>
       <button id="create8" type="submit" disabled
         class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center text-sm sm:text-base">
+        Next
+      </button>
+    </form>
+    <form id="form9" class="flex flex-col gap-6 max-w-2xl mx-auto p-6 bg-gray-900 rounded-xl shadow-lg">
+      <h2 class="text-gray-400 text-center text-sm">Step 9: Privacy Policy</h2>
+      <div id="policyBox" class="bg-gray-800 text-gray-200 p-6 rounded-lg h-64 sm:h-80 overflow-y-auto text-sm leading-relaxed border border-gray-700"></div>
+      <div id="agreeDiv" class="flex flex-col gap-2 hidden">
+        <label class="flex items-center gap-3">
+          <span class="text-gray-300 text-sm flex-1">Do you agree to the privacy policy?</span>
+          <select id="agreeSelect" class="bg-gray-800 text-white p-2 rounded w-32">
+            <option value="">Select…</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+      </div>
+      <div id="readCheck" class="hidden flex flex-col gap-2">
+        <label class="flex items-center gap-3">
+          <span class="text-gray-300 text-sm flex-1">Did you read the complete privacy policy?</span>
+          <select id="readSelect" class="bg-gray-800 text-white p-2 rounded w-32">
+            <option value="">Select…</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+      </div>
+      <div id="questionDiv" class="hidden flex flex-col gap-2 text-gray-300 text-sm"></div>
+      <div id="charQ" class="hidden flex flex-col gap-2 text-gray-300 text-sm">
+        <label>How many characters are in the policy?</label>
+        <input id="charInput" class="bg-gray-800 text-white p-2 rounded w-full" placeholder="Enter number"/>
+        <p id="charFeedback" class="text-xs mt-1"></p>
+      </div>
+      <button id="create9" type="submit" disabled
+        class="bg-blue-600 hover:brightness-125 text-white font-bold py-3 rounded-lg transition-all text-sm sm:text-base hidden">
+        Next
+      </button>
+    </form>
+    <form class="flex flex-col gap-4" id="form10" style="display:none">
+      <p class="text-gray-500 text-sm text-center">Step 10: News</p>
+      <label class="flex items-start gap-3 bg-gray-800 p-4 rounded-lg">
+        <input type="checkbox" id="consentNews" class="mt-1 w-4 h-4" required checked onchange="mustagri.style.display=!this.checked?'inline':'none'">
+        <span class="text-gray-300 text-sm">
+          I agree to receive occasional announcements, product updates, and important news.
+          <br>
+          <span class="text-red-500 text-xs hidden" id="mustagri">Not agreeing is not allowed</span>
+        </span>
+      </label>
+      <button id="create10" type="submit"
+        class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all text-sm sm:text-base">
         Next
       </button>
     </form>
@@ -312,14 +367,13 @@
     const g = (e) => document.getElementById(e);
     const l = lucide.createIcons;
     const q = (e) => document.querySelectorAll(e);
-    const ud = () => { g("day").textContent = state.day.toString().padStart(2, "0"); g("month").textContent = state.month.toString().padStart(2, "0"); g("year").textContent = state.year; g("dateSlider").value = d2s(state.day, state.month, state.year); slid(g("dateSlider"),47481); const allowed = allo(state.year); g('create5').disabled = !allowed; };
-    const d2s = (d, m, y) => Math.floor((new Date(y,m-1,d) - new Date(1900,0,1)) / (1000*60*60*24));
+    const ud = () => { g("day").textContent = state.day.toString().padStart(2, "0"); g("month").textContent = state.month.toString().padStart(2, "0"); g("year").textContent = state.year; const allowed = allo(state.year); g('create5').disabled = !allowed; };
     const del = (k) => localStorage.removeItem(k);
     const ord = (n) => { const s = ["th","st","nd","rd"], v = n % 100; return n + (s[(v-20)%10] || s[v] || s[0]) };
     const pre = (e, t) => t.map(str => e + str);
     const reg = () => g("display").textContent = state.region = g('regionInput').value = state.regions[Math.floor(Math.random() * state.regions.length)];
     const s2d = (value) => {const start = new Date(1900,0,1); const date = new Date(start.getTime() + value*24*60*60*1000); state.day = date.getDate(); state.month = date.getMonth()+1; state.year = date.getFullYear(); ud()};
-    const allo = (t) => {let e="",l=!0;for(let n in agesAllowed){let[o,i]=n.split("-").map(Number);if(t>=o&&t<=i){l=agesAllowed[n].allowed,e=agesAllowed[n].note;break}}let s=g("notification5");return s.textContent=e||"",s.classList.toggle("text-green-500",l),s.classList.toggle("text-red-500",!l),l};
+    const allo = (t) => {if(t==1900)return false;let e="",l=!0;for(let n in agesAllowed){let[o,i]=n.split("-").map(Number);if(t>=o&&t<=i){l=agesAllowed[n].allowed,e=agesAllowed[n].note;break}}let s=g("notification5");return s.textContent=e||"",s.classList.toggle("text-green-500",l),s.classList.toggle("text-red-500",!l),l};
     const exec = (f, t) => setTimeout(f, t);
     const fetc = async (x,o) => {let r,t,b,e;x=typeof x=="string"?[x]:x;for(let u of x){try{r=await fetch(u,o);if(!r.ok)throw r;t=await r.text();try{b=JSON.parse(t)}catch{b=t}return b}catch(er){e=er}}return e};
     const list = (i) => g('form'+i).addEventListener("input", e => {g('create'+i).disabled = !g('form'+i).checkValidity()});
@@ -473,7 +527,7 @@
 
     // ----------------------- EVENT LISTENERS -----------------------
 
-    [1, 2, 3, 6, 8].forEach(e => list(e));
+    [1, 2, 3, 6, 8, 10].forEach(e => list(e));
 
     // Email Form
     g('form1').addEventListener("submit", e => {
@@ -518,7 +572,29 @@
       g('form6').style.display = 'flex';
       g('form5').style.display = 'none';
     });
-    g("dateSlider").addEventListener("input", () => s2d(g("dateSlider").value));
+    (() => {
+    const container = g('dateSliderContainer');
+    const dot = g('dateDot');
+    const handles = q('.handle');
+    let angle = 0, pos = 0, vel = 0, dragging = false, grabbedHandle = null, startY, startAngle;
+    handles.forEach(h => { h.addEventListener('mousedown', e => { dragging = true;grabbedHandle = h;startY = e.clientY;startAngle = angle;e.preventDefault();});});
+    window.addEventListener('mouseup', () => {dragging = false;grabbedHandle = null;let i = setInterval(()=>{angle *= 0.8}, 10);setTimeout(()=>{angle = 0; clearInterval(i)}, 500)});
+    window.addEventListener('mousemove', e => {if(dragging && grabbedHandle){const deltaY = e.clientY - startY;const direction = grabbedHandle === handles[0] ? -1 : 1;angle = startAngle + deltaY * 0.005 * direction;angle = Math.max(Math.min(angle, 0.5), -0.5);}});
+    function animate() {
+      container.style.transform = `rotate(${angle}rad)`;
+      const g = 1.5;
+      vel += Math.sin(angle) * g;
+      vel *= 0.95; if(!dragging) vel *= 0.5;
+      pos += vel;
+      const max = container.clientWidth - dot.clientWidth;
+      if(pos < 0){ pos = 0; vel *= -0.5; }
+      if(pos > max){ pos = max; vel *= -0.5; }
+      dot.style.left = pos + 'px';
+      document.getElementById('dateSlider').value = pos / max * 47481;
+      requestAnimationFrame(animate);
+    }
+    animate()})();
+    setInterval(() => s2d(g("dateSlider").value), 50);
     // Select Region
     g('form6').addEventListener('submit', e => {
       e.preventDefault();
@@ -552,9 +628,70 @@
       if (!g('form8').checkValidity()) return;
       step('role', g('role-result').innerText.replace("You are: ", ""));
       g('form8').style.display = 'none';
+      g('form9').style.display = 'flex';
+    });
+    // Privacy Policy
+    g('form9').addEventListener('submit', e => {
+      e.preventDefault();
+      if (!g('form9').checkValidity()) return;
+      step('role', g('role-result').innerText.replace("You are: ", ""));
+      g('form9').style.display = 'none';
+      g('form10').style.display = 'flex';
+    });
+    document.getElementById("policyBox").innerHTML = policyText;
+    const questions = ["What do we collect?", "Where is information stored?", "Who is responsible if data leaks?", "How is this app provided?", "Will you be notified about updates?"];
+    const answers = { "What do we collect?":"nothing", "Where is information stored?":"localStorage", "Who is responsible if data leaks?":"me", "How is this app provided?":"as-is", "Will you be notified about updates?":"no" };
+    let shq = [], currentQIndex = 0;
+    const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
+    agreeSelect.addEventListener("change", () => {
+      const show = agreeSelect.value === "yes";
+      readCheck.classList.toggle("hidden", !show);
+      questionDiv.classList.toggle("hidden", !show);
+      create9.classList.toggle("hidden", !show);
+    });
+    policyBox.addEventListener("scroll", () => {
+      if (policyBox.scrollTop + policyBox.clientHeight + 100 >= policyBox.scrollHeight) agreeDiv.style.display = 'flex';
+    });
+    readSelect.addEventListener("change", () => {
+      if (readSelect.value === "yes") {
+        shq = shuffle(questions); currentQIndex = 0; showNextQuestion();
+      } else {
+        questionDiv.classList.add("hidden"); charQ.classList.add("hidden"); create9.classList.add("hidden");
+      }
+    });
+    function showNextQuestion() {
+      if (currentQIndex >= shq.length) {
+        questionDiv.classList.add("hidden");
+        charQ.classList.remove("hidden");
+        return;
+      }
+      const q = shq[currentQIndex];
+      questionDiv.innerHTML = `<p>${q}</p><input id="currentInput" class="bg-gray-800 text-white p-2 rounded w-full" placeholder="Your answer"/>`;
+      questionDiv.classList.remove("hidden");
+      const inputEl = document.getElementById("currentInput");
+      inputEl.focus();
+      inputEl.addEventListener("input", () => {
+        if (inputEl.value.toLowerCase().trim() === answers[q].toLowerCase()) {
+          currentQIndex++;
+          showNextQuestion();
+        }
+      });
+    }
+    charInput.addEventListener("input", () => {
+      const count = policyBox.textContent.length, val = parseInt(charInput.value);
+      if (!val) { charFeedback.textContent=""; create9.disabled = true; return; }
+      if (val === count) { charFeedback.textContent="Correct!"; create9.disabled = false; }
+      else { charFeedback.innerHTML=`<span class='text-red-500'>${val>count?"Too high":"Too low"}. Try again.</span>`; create9.disabled = true; }
+    });
+    // News
+    g('form10').addEventListener('submit', e => {
+      e.preventDefault();
+      if (!g('form10').checkValidity()) return;
+      step('role', g('role-result').innerText.replace("You are: ", ""));
+      g('form10').style.display = 'none';
       complete();
       notify("Come back later for the whole experience");
-      g('form9').style.display = 'flex';
+      g('form11').style.display = 'flex';
     });
 
     // ----------------------- SATURATORS & EXTRA -----------------------
