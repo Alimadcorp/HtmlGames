@@ -25,6 +25,6 @@ Files:
 1. [x] ~~Select region~~
 1. [x] ~~Uhhhh add phone number selector~~
 1. [x] ~~Role selector~~
-1. [ ] Consent to announcements and news
-1. [ ] Consent to privacy policy
+1. [x] ~~Consent to announcements and news~~
+1. [x] ~~Consent to privacy policy~~
 1. [ ] Captcha

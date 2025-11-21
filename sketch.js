@@ -1,7 +1,7 @@
 const policyText = `
 <p>We <strong>do not collect your email, name, or any other information</strong>. <i>Information collected is only stored on your localStorage</i>, and never reaches any online servers.</p>
 <p>We and our app will <strong>not be responsible</strong> IF any of your information is transferred to someone else without your consent. May have been a virus or anything. This app is provided <i>as-is</i> to the user.</p>
-<p>Again, your data will <strong>not be stored or used by anyone</strong> unless you share a screenshot with someone else. In any case, you will be responsible if your data leaks.</p>
+<p>Again, your data will <strong>not be stored or used by anyone</strong> unless you share a screenshot with someone else. In any case, you will be responsible of your data leaks.</p>
 Your localStorage will be used to store a bunch of app preferences and stuff.
 <p>You may request <i>deletion of your account</i> if you ever manage to sign up. Your data is protected by you and your browser's security.</p>
 <p>We may update this policy and <strong>will not notify you</strong> when updates are significant.</p><br>`+`
