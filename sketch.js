@@ -1,10 +1,12 @@
-const policyText = `
+const policyText =
+  `
 <p>We <strong>do not collect your email, name, or any other information</strong>. <i>Information collected is only stored on your localStorage</i>, and never reaches any online servers.</p>
 <p>We and our app will <strong>not be responsible</strong> IF any of your information is transferred to someone else without your consent. May have been a virus or anything. This app is provided <i>as-is</i> to the user.</p>
 <p>Again, your data will <strong>not be stored or used by anyone</strong> unless you share a screenshot with someone else. In any case, you will be responsible of your data leaks.</p>
 Your localStorage will be used to store a bunch of app preferences and stuff.
 <p>You may request <i>deletion of your account</i> if you ever manage to sign up. Your data is protected by you and your browser's security.</p>
-<p>We may update this policy and <strong>will not notify you</strong> when updates are significant.</p><br>`+`
+<p>We may update this policy and <strong>will not notify you</strong> when updates are significant.</p><br>` +
+  `
 <p>We do not track or monitor your usage of this application beyond the client-side storage necessary for functionality. All preferences, settings, and interactions remain strictly on your device. No data is transmitted to any server, cloud service, or third-party platform. You are fully responsible for safeguarding your own device and access credentials.</p>
 <p>This application is provided <strong>"as-is"</strong>, without any warranties or guarantees of performance, security, or reliability. Any issues arising from misuse, unauthorized access, or device compromise are not the responsibility of the developers.</p>
 <p>We may include optional features that require local storage for functionality, such as saving user preferences, caching data for faster load times, or storing temporary session information. All such data remains on your device and is never transmitted externally.</p>
@@ -28,7 +30,9 @@ We strongly advise against sharing device access, credentials, or locally stored
 The application does not collect any personally identifiable information, usage metrics, or behavioral data. Any telemetry or analytics functionality is strictly disabled and remains inactive unless manually enabled by you.</p><p>
 This policy serves as the full extent of our privacy and usage guidelines. By interacting with the app, you acknowledge that you have read, understood, and agreed to all the provisions contained herein.</p>
 <p>Blah blah blah ehem</p>
-`.repeat(20).trim();
+`
+    .repeat(20)
+    .trim();
 let sketch = (p) => {
   let w, h;
   let p5canvas = {};
@@ -36,7 +40,6 @@ let sketch = (p) => {
   let slingshot;
   let inputText = "";
   const files = ["fly.mp3", "sling.mp3", "shot.mp3", "pop.mp3"];
-
   p.setup = () => {
     w = p.select("#canvasBox").width;
     h = p.select("#canvasBox").height;
@@ -186,8 +189,7 @@ let sketch = (p) => {
         if (nextX - this.r < 0) {
           this.pos.x = this.r;
           this.vel.x *= -0.8;
-        }
-        else if (nextX + this.r > p.width) {
+        } else if (nextX + this.r > p.width) {
           this.pos.x = p.width - this.r;
           this.vel.x *= -0.8;
         }
@@ -204,7 +206,11 @@ let sketch = (p) => {
         this.vel.y *= -0.7;
         this.vel.x *= 0.7;
         for (let f of p5canvas.floorNumbers) {
-          if (this.pos.x > f.x && this.pos.x < f.x + f.w && this.hits < p5canvas.maxHits) {
+          if (
+            this.pos.x > f.x &&
+            this.pos.x < f.x + f.w &&
+            this.hits < p5canvas.maxHits
+          ) {
             inputText += f.n;
             document.getElementById("ph").value += f.n;
             f.glow = 255;
@@ -251,8 +257,186 @@ let sketch = (p) => {
     }
   }
 };
+let capt,
+  woqdh092y3f0ieoh = false;
+function initiateCaptcha() {
+  capt = new p5((p) => {
+    let mode = 4,
+      w,
+      h,
+      score = 0,
+      t = 0,
+      clicks = 0;
+    let tx = 0,
+      dir = 1,
+      flash = 0;
+    let tp = [];
+    let box = { x: 100, y: 100, s: 60, vx: 4, vy: 3, hits: 0 };
+    let perfStart = 0,
+      perfFrames = 0;
+    let particles = [];
+    let s = document.getElementById("stp11");
+    let cframes = Array(60).fill(false);
+    let pct = 0;
+    tp = cframes;
+    p.setup = () => {
+      let c = p.createCanvas(p.windowWidth / 2, 400);
+      c.parent("captcha-canvas");
+      w = p.width;
+      h = p.height;
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(30);
+      p.rectMode(p.CENTER);
+      p.frameRate(60);
+      perfStart = performance.now();
+    };
+    function bar(value, max) {
+      pct = p.lerp(pct || 0, value / max, 0.5);
+      let barX = 50;
+      let barWidth = w - 100;
+      let barY = h - 30;
+      p.fill(255, 50);
+      p.rect(barX + barWidth / 2, barY, barWidth, 12, 5);
+      p.fill(0, 200, 255);
+      p.rect(barX + (barWidth * pct) / 2, barY, barWidth * pct, 12, 5);
+    }
+    function shiftL(arr, value) {
+      tp = arr;
+      arr.shift();
+      arr.push(value);
+    }
+    function spawnParticles(x, y) {
+      for (let i = 0; i < 6; i++) {
+        particles.push({
+          x,
+          y,
+          vx: p.random(-2, 2),
+          vy: p.random(-5, -2),
+          life: 30,
+        });
+      }
+    }
+    function good() {
+      if (mode != 2) flash = 20;
+      spawnParticles(p.mouseX, p.mouseY);
+    }
+    function drawParticles() {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        let ptl = particles[i];
+        p.fill(100, 255 - (ptl.life / 30) * 255, 255);
+        p.circle(ptl.x, ptl.y, (ptl.life / 30) * 6);
+        ptl.x += ptl.vx;
+        ptl.y += ptl.vy;
+        ptl.vy += 0.2;
+        ptl.life--;
+        if (ptl.life <= 0) particles.splice(i, 1);
+      }
+    }
+    p.draw = () => {
+      p.clear();
+      shiftL(cframes, false);
+      if (flash > 0) {
+        let alpha = p.sin((flash / 20) * Math.PI) * 120 + 0;
+        let wobble = p.sin(p.frameCount * 0.1) * 10;
+        p.fill(0, 150, 255, alpha);
+        p.noStroke();
+        p.rect(w / 2, h / 2, w + wobble, h + wobble, 10);
+        flash--;
+      }
+      drawParticles();
+      if (mode === 0) {
+        tx += 4 * dir;
+        if ((tx > w - 50 && dir == 1) || (dir == -1 && tx < 50)) dir *= -1;
+        p.stroke(255, 0, 0, 100);
+        p.line(w / 2, 100, w / 2, h - 100);
+        p.noStroke();
+        p.fill(255);
+        let s = 30;
+        let half = s / 2;
+        let height = (s * Math.sqrt(3)) / 2;
+        p.triangle(
+          tx - half,
+          h / 2 + height / 3,
+          tx + half,
+          h / 2 + height / 3,
+          tx,
+          h / 2 - (2 * height) / 3
+        );
+        bar(score, 5);
+      }
+      if (mode === 2) {
+        t++;
+        clicks = cframes.filter(Boolean).length;
+        bar(clicks, 10);
+        perfStart = performance.now();
+        mode = clicks >= 10 ? 3 : 2;
+      }
+      if (mode === 3) {
+        perfFrames++;
+        let dt = performance.now() - perfStart;
+        p.text("Browser check...", w / 2, h / 2);
+        s.textContent = "Step 11: CAPTCHA";
+        bar(dt, 10000);
+        if (dt > 10000) {
+          mode = perfFrames > 20 ? 5 : 3;
+          s.textContent = "Step 11: CAPTCHA";
+        }
+      }
+      if (mode === 4) {
+        box.x += box.vx;
+        box.y += box.vy;
+        if (box.x < box.s / 2 || box.x > w - box.s / 2) box.vx *= -1;
+        if (box.y < box.s / 2 || box.y > h - box.s / 2) box.vy *= -1;
+        p.fill(255);
+        p.rect(box.x, box.y, box.s, box.s, 4);
+        s.textContent = "Click the moving box to prove that you are human";
+        bar(box.hits, 5);
+      }
+      if (mode === 5) {
+        p.fill(0, 255, 150);
+        p.text("PASSED", w / 2, h / 2);
+        create11.disabled = false;
+        woqdh092y3f0ieoh = true;
+      }
+      p.stroke(255);
+      p.strokeWeight(3);
+      for (let i = 0; i < cframes.length; i++) {
+        if (cframes[i]) p.point((i * w) / 60, h);
+      }
+      p.noStroke();
+    };
+    p.mousePressed = () => {
+      cframes = tp;
+      shiftL(cframes, true);
+      if (mode === 0 && Math.abs(tx - w / 2) < 15) {
+        score++;
+        good();
+        if (score >= 5) {
+          mode = 2;
+          s.textContent = "Click ten times in a second";
+        }
+      } else if (mode === 2) {
+        clicks++;
+        good();
+      } else if (
+        mode === 4 &&
+        Math.abs(p.mouseX - box.x) < box.s / 2 &&
+        Math.abs(p.mouseY - box.y) < box.s / 2
+      ) {
+        box.hits++;
+        good();
+        box.s = Math.max(12, box.s * 0.75);
+        box.vx *= 1.2;
+        box.vy *= 1.2;
+        if (box.hits >= 5) {
+          mode = 0;
+          s.textContent = "Step 11: CAPTCHA";
+        }
+      }
+    };
+  });
+}
 let wheel;
-
 function initWheel() {
   const roles = ["Developer", "Designer", "Manager", "QA", "Support", "Other"];
   let held = false;

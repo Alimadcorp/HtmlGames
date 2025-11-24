@@ -10,7 +10,7 @@ Hi this is my repository where I'd be making and uploading a bunch of fun HTML g
 1. Sign Up for TheCloudService™
 
 ### Sign Up for TheCloudService™
-This game is a submission to r/badUIBattles and a project for the HackClub Midnight program. Basically there's a bunch of stupid questions and UI decisions that is meant to liek drive the user crazy. Also the signup form is impossible to complete, hence login is not allowed. The app is sure that no account exists already.
+This game is a submission to r/badUIBattles and a project for the HackClub Midnight program. Basically there's a bunch of stupid questions and UI decisions that is meant to liek drive the user crazy. Also the signup form is impossible to complete, hence login is not allowed. The app makes sure that no account exists.
 
 Files: 
 - index.html: Contains main app
@@ -27,4 +27,4 @@ Files:
 1. [x] ~~Role selector~~
 1. [x] ~~Consent to announcements and news~~
 1. [x] ~~Consent to privacy policy~~
-1. [ ] Captcha
+1. [x] ~~Captcha (Scaling box, click at center, throw trash, cps)~~

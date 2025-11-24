@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign Up</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.553.0/dist/umd/lucide.min.js"></script>
+  <!--<script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.553.0/dist/umd/lucide.min.js"></script>-->
+  <script src="tailwind.css"></script>
+  <script src="lucide.min.js"></script>
   <script src="p5.min.js"></script>
   <script src="p5.sound.min.js"></script>
   <script src="sketch.js"></script>
@@ -114,6 +116,9 @@
         background: #0005;
         backdrop-filter: blur(4px);
         cursor: pointer;
+      }
+      #captcha-canvas {
+        image-rendering: pixelated;
       }
     }
   </style>
@@ -350,6 +355,32 @@
       </label>
       <button id="create10" type="submit"
         class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all text-sm sm:text-base">
+        Next
+      </button>
+    </form>
+    <form class="flex flex-col gap-4 w-[50vw]" id="form11" style="display:none">
+      <p class="text-gray-500 text-sm text-center" id="stp11">Step 11: CAPTCHA</p>
+      <div id="captcha-canvas" class="w-full h-80 my-12 flex items-center justify-center"></div>
+      <button id="create11" type="submit" disabled
+        class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all text-sm sm:text-base">
+        Next
+      </button>
+    </form>
+    <form class="flex flex-col text-white gap-4 w-[50vw]" id="form12" style="display:none">
+      <p class="text-center">Signing Up...</p>
+      <div class="flex items-center justify-center">
+      <i data-lucide="loader" class="w-6 h-6 text-white animate-spin" aria-hidden="true"></i></div>
+      <button id="create12" type="submit" disabled
+        class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all text-sm sm:text-base hidden">
+        Next
+      </button>
+    </form>
+    <form class="flex flex-col text-red-500 gap-4 w-[50vw]" id="form13" style="display:none">
+      <p class="text-center">Fetch failed</p>
+      <div class="flex items-center justify-center">
+      <i data-lucide="alert-circle" class="w-6 h-6 text-red animate-spin" aria-hidden="true"></i></div>
+      <button id="create13" type="submit" disabled
+        class="bg-blue-600 hover:brightness-120 text-white font-bold py-3 rounded-lg transition-all text-sm sm:text-base hidden">
         Next
       </button>
     </form>
@@ -689,9 +720,18 @@
       if (!g('form10').checkValidity()) return;
       step('role', g('role-result').innerText.replace("You are: ", ""));
       g('form10').style.display = 'none';
-      complete();
-      notify("Come back later for the whole experience");
+      initiateCaptcha();
       g('form11').style.display = 'flex';
+    });
+    // CAPTCHA
+    g('form11').addEventListener('submit', e => {
+      e.preventDefault();
+      if (!woqdh092y3f0ieoh) return;
+      step('CAPTCHA', "PASSED");
+      g('form11').style.display = 'none';
+      g('form12').style.display = 'flex';
+      setTimeout(()=>{g('form12').style.display='none';g('form13').style.display='flex'}, 10000);
+      complete();
     });
 
     // ----------------------- SATURATORS & EXTRA -----------------------
